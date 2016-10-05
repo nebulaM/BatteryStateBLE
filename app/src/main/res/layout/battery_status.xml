@@ -55,46 +55,45 @@
 
 
         <Button
-        android:id="@+id/tbBatteryLevel"
+        android:id="@+id/displayBatteryLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="level-"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="350dp"
-        android:onClick="displayBatteryLevel"/>
+        />
 
 
         <Button
-            android:id="@+id/tbBatteryLevel2"
+            android:id="@+id/displayBatteryLevel2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="level+"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="300dp"
-            android:onClick="displayBatteryLevel2"/>
+            android:layout_marginTop="300dp" />
 
         <Button
-            android:id="@+id/tbBattery3"
+            android:id="@+id/displayBatteryHealth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="health-"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="450dp"
-            android:onClick="displayBatteryHealth"/>
+           />
 
 
         <Button
-            android:id="@+id/tbBattery4"
+            android:id="@+id/displayBatteryHealth2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="health+"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="400dp"
-            android:onClick="displayBatteryHealth2"/>
+            />
 
 
 
