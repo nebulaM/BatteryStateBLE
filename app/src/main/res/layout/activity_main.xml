@@ -7,5 +7,12 @@
     tools:context="com.cadex.nebulaM.wheelchairpower.MainActivity" >
 
 
-
+    <Button
+        android:id="@+id/testReadBLE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="readBLE"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp" />
 </FrameLayout>
