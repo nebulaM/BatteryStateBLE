@@ -37,7 +37,12 @@ public class MainDisplayFragment extends Fragment {
         return view;
     }
 
-    protected void updateUI(String inBatteryLevel){
+    protected void updateUI(String inBatteryLevel,boolean isConnected){
+        if(!isConnected){
+            mViewBatteryLevel.setBatteryLevel(0);
+            mTextBatteryLevelPercent.setText("Not Connected");
+            return;
+        }
         int batteryLevel=Integer.parseInt(inBatteryLevel);
         if(batteryLevel>100 || batteryLevel<0){
             mViewBatteryLevel.setBatteryLevel(0);

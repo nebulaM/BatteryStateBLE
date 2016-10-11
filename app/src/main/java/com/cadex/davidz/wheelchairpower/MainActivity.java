@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 mBLEBatteryLevel=intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                mBatteryDisplayFragment.updateUI(mBLEBatteryLevel);
+                //TODO:UNcomment
+                //mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mConnected);
             }
         }
     };
@@ -119,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
                 }
+                //TODO:DELETE the next line
+                mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mConnected);
             }
         });
 
