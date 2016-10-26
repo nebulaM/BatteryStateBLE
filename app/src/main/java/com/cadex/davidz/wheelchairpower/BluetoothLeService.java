@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -60,8 +61,8 @@ public class BluetoothLeService extends Service {
             "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
     public final static String ACTION_DATA_AVAILABLE =
             "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
-    public final static String EXTRA_DATA =
-            "com.example.bluetooth.le.EXTRA_DATA";
+    public final static String EXTRA_DATA = "0";
+    public final static String EXTRA_DATA_SET = "0,0";
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
@@ -128,7 +129,6 @@ public class BluetoothLeService extends Service {
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
-
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
         // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
@@ -152,8 +152,11 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, "battery percent format UINT8.");
             //getIntValue(format, offset)
             final int batPercent= characteristic.getIntValue(format, 0);
+            final int batHealth=characteristic.getIntValue(format, 0);
             Log.d(TAG, String.format("Received battery percent: %d", batPercent));
-            intent.putExtra(EXTRA_DATA, String.valueOf(batPercent));
+            Log.d(TAG, String.format("Received battery health: %d", batHealth));
+            intent.putExtra(EXTRA_DATA_SET, "0,"+batPercent+","+batHealth);
+
         }
         else {
             // For all other profiles, writes the data formatted in HEX.

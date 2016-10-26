@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     public static String mBLEBatteryLevel="90";
-    private MainDisplayFragment mBatteryDisplayFragment;
+    public static String mBLEBatteryHealth="10";
+    private BatteryStatusDisplay mBatteryDisplayFragment;
 
     private BluetoothAdapter mBluetoothAdapter;
     //an integer >0
@@ -71,13 +72,16 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
+                mBatteryDisplayFragment.updateUI("3,0,0");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
+                //errorCode=2, not connected
+                mBatteryDisplayFragment.updateUI("2,0,0");
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                mBLEBatteryLevel=intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                //TODO:UNcomment
-                //mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mConnected);
+                //errorCode=0
+                String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
+                mBatteryDisplayFragment.updateUI(dataIn);
             }
         }
     };
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        mBatteryDisplayFragment = new MainDisplayFragment();
+        mBatteryDisplayFragment = new BatteryStatusDisplay();
         getFragmentManager().beginTransaction().add(R.id.frag_container, mBatteryDisplayFragment).commit();
 
         Button testRead = (Button) findViewById(R.id.testReadBLE);
@@ -115,13 +119,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 if(characteristic==null){
-                    mBLEBatteryLevel="-1";
+                    //errorCode=1,wrong device
+                    mBatteryDisplayFragment.updateUI("1,0,0");
                 }
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
                 }
                 //TODO:DELETE the next line
-                mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mConnected);
+                //mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mBLEBatteryHealth,mConnected);
             }
         });
 
