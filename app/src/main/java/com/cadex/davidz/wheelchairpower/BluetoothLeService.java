@@ -148,14 +148,11 @@ public class BluetoothLeService extends Service {
         }
 
         else if(UUID_Battery_Level_Percent.equals(characteristic.getUuid())){
-            int format=BluetoothGattCharacteristic.FORMAT_UINT8;
-            Log.d(TAG, "battery percent format UINT8.");
-            //getIntValue(format, offset)
-            final int batPercent= characteristic.getIntValue(format, 0);
-            final int batHealth=characteristic.getIntValue(format, 0);
-            Log.d(TAG, String.format("Received battery percent: %d", batPercent));
-            Log.d(TAG, String.format("Received battery health: %d", batHealth));
-            intent.putExtra(EXTRA_DATA_SET, "0,"+batPercent+","+batHealth);
+            Log.d(TAG, "battery data format UINT8.");
+            byte[] dataSet=characteristic.getValue();
+            Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
+            Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
+            intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]);
 
         }
         else {
