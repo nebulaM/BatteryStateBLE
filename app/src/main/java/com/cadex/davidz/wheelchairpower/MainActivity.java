@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static String mBLEBatteryLevel="90";
     public static String mBLEBatteryHealth="10";
     private BatteryStatusDisplay mBatteryDisplayFragment;
-
+    private boolean mSubscribe=true;
     private BluetoothAdapter mBluetoothAdapter;
     //an integer >0
     private final int REQUEST_ENABLE_BT=1;
@@ -125,8 +125,28 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
                 }
-                //TODO:DELETE the next line
-                //mBatteryDisplayFragment.updateUI(mBLEBatteryLevel,mBLEBatteryHealth,mConnected);
+            }
+        });
+
+        Button testNoti = (Button) findViewById(R.id.SetNotification);
+        testNoti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+                if(characteristic==null){
+                    //errorCode=1,wrong device
+                    mBatteryDisplayFragment.updateUI("1,0,0");
+                }
+                else {
+                    mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
+                    if(mSubscribe){
+                        mSubscribe=false;
+                    }
+                    else{
+                        mSubscribe=true;
+                    }
+                }
+
             }
         });
 
@@ -135,9 +155,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d(TAG, "onresume");
-
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.w(TAG, "Connect request result=" + result);
@@ -170,11 +189,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+        if(characteristic!=null) {
+            mBluetoothLeService.setCharacteristicNotification(characteristic, false);
+        }
+       // mBluetoothLeService.disconnect();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
     }
