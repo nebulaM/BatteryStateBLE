@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WheelChair Power</string>
-    <string name="battery_level">0</string>string>
+    <string name="battery_level">0%</string>string>
+    <string name="battery_health">0%</string>string>
     <string name="font_size">20sp</string>string>
 
     <string name="label_state">State:</string>

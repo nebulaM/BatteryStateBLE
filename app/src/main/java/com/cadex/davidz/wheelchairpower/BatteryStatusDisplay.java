@@ -33,6 +33,7 @@ import static android.content.ContentValues.TAG;
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
     private TextView mTextBatteryLevelPercent;
+    private TextView mTextBatteryHealthPercent;
 
     private ViewBatteryLevel mViewBatteryLevel;
     private ViewBatteryHealth mViewBatteryHealth;
@@ -44,10 +45,11 @@ public class BatteryStatusDisplay extends Fragment {
         mViewBatteryLevel = (ViewBatteryLevel) view.findViewById(R.id.ViewBatteryLevel);
         mViewBatteryHealth = (ViewBatteryHealth) view.findViewById(R.id.ViewBatteryHealth);
         mTextBatteryLevelPercent = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
+        mTextBatteryHealthPercent =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
 
         mViewBatteryLevel.setBatteryLevel(0);
         mViewBatteryHealth.setBatteryHealth(0);
-        mTextBatteryLevelPercent.setText(String.valueOf(0) + "%");
+
 
 
         return view;
@@ -63,21 +65,25 @@ public class BatteryStatusDisplay extends Fragment {
             mViewBatteryLevel.setBatteryLevel(batteryLevel);
             mViewBatteryHealth.setBatteryHealth(batteryHealth);
             mTextBatteryLevelPercent.setText(dataSet[1] + "%");
+            mTextBatteryHealthPercent.setText(dataSet[2] + "%");
         }
         else if(errorCode==1){
             mViewBatteryLevel.setBatteryLevel(0);
             mViewBatteryHealth.setBatteryHealth(0);
             mTextBatteryLevelPercent.setText("Wrong Device");
+            mTextBatteryHealthPercent.setText("");
         }
         else if(errorCode==2){
             mViewBatteryLevel.setBatteryLevel(0);
             mViewBatteryHealth.setBatteryHealth(0);
             mTextBatteryLevelPercent.setText("Not Connected");
+            mTextBatteryHealthPercent.setText("");
         }
         else if(errorCode==3){
             mViewBatteryLevel.setBatteryLevel(0);
             mViewBatteryHealth.setBatteryHealth(0);
             mTextBatteryLevelPercent.setText("Connected");
+            mTextBatteryHealthPercent.setText("");
             return;
         }
 

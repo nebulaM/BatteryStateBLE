@@ -17,6 +17,7 @@ package com.cadex.nebulaM.wheelchairpower.customviews;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -87,6 +88,8 @@ public class ViewBatteryHealth extends View{
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.WHITE);
+        mPaint.setTextSize(20);
 
         rectangle=new RectF();
         rectangle.set(0,0,mWidth,mHeight);
@@ -155,6 +158,7 @@ public class ViewBatteryHealth extends View{
             mPaint.setColor(0xffe66d56);//, 0xffb7161b);
         }
         canvas.drawRect(0,0,mBatteryHealth*mWidth/100.0f,mHeight,mPaint);
+        //canvas.drawText(toString(mBatteryHealth),);
     }
 
     public void setGradient(int sColor, int eColor){
