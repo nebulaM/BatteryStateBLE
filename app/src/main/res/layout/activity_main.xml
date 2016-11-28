@@ -19,25 +19,28 @@
     android:id="@+id/frag_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cadex.nebulaM.wheelchairpower.MainActivity" >
+    tools:context="com.cadex.nebulaM.wheelchairpower.MainActivity"
+    android:background="@drawable/gradient_background">
 
-
-    <Button
-        android:id="@+id/testReadBLE"
+    <ImageButton
+        android:id="@+id/readBLE"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="readBLE"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="300dp"
-        android:layout_marginLeft="20dp"/>
-    <Button
-        android:id="@+id/SetNotification"
+        android:layout_marginLeft="50dp"
+        android:src="@drawable/refresh_button"
+        android:background="@null"/>
+    <ImageButton
+        android:id="@+id/setNotification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SetNotification"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="300dp"
-        android:layout_marginLeft="150dp"/>
+        android:layout_marginLeft="250dp"
+        android:src="@drawable/subscribe_button"
+        android:background="@null"/>
+
 </FrameLayout>
