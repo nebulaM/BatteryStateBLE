@@ -14,7 +14,6 @@
 */
 package com.cadex.nebulaM.wheelchairpower;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -29,7 +28,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,21 +37,16 @@ public class MainActivity extends AppCompatActivity {
     //hardcode to our bluetooth server for now
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-
     private String mDeviceName;
     private String mDeviceAddress;
     private BluetoothLeService mBluetoothLeService;
-
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
-
-    public static String mBLEBatteryLevel="90";
-    public static String mBLEBatteryHealth="10";
     private BatteryStatusDisplay mBatteryDisplayFragment;
     private boolean mSubscribe=true;
-    private BluetoothAdapter mBluetoothAdapter;
     //an integer >0
     private final int REQUEST_ENABLE_BT=1;
+
+    private String BLEDataIn;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -95,6 +90,20 @@ public class MainActivity extends AppCompatActivity {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //errorCode=0
                 String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
+                int[] arr=new int[4];
+
+                    String[] dataSet = dataIn.split(",");
+                if(dataSet.length>=7) {
+                    for(int i=0;i<4;++i) {
+                        int data= Integer.parseInt(dataSet[3+i]);
+                        if(data<0){
+                            data=256+data;
+                        }
+                        arr[i]=data;
+                    }
+                    Toast.makeText(getApplicationContext(),  arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3],
+                                    Toast.LENGTH_LONG).show();
+                }
                 mBatteryDisplayFragment.updateUI(dataIn);
             }
         }
@@ -127,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         mBatteryDisplayFragment = new BatteryStatusDisplay();
         getFragmentManager().beginTransaction().add(R.id.frag_container, mBatteryDisplayFragment).commit();
 
-        Button testRead = (Button) findViewById(R.id.testReadBLE);
-        testRead.setOnClickListener(new View.OnClickListener() {
+        ImageButton readBLE = (ImageButton) findViewById(R.id.readBLE);
+        readBLE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
@@ -142,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button testNoti = (Button) findViewById(R.id.SetNotification);
-        testNoti.setOnClickListener(new View.OnClickListener() {
+        ImageButton subscribeBLE = (ImageButton) findViewById(R.id.setNotification);
+        subscribeBLE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
@@ -164,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     @Override
@@ -175,28 +185,6 @@ public class MainActivity extends AppCompatActivity {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.w(TAG, "Connect request result=" + result);
         }
-
-        /*Thread thread = new Thread(){
-            @Override
-            public void run() {
-                try {
-                    while(true) {
-                        BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                        if(characteristic==null){
-                            mBLEBatteryLevel="-1";
-                        }
-                        else {
-                            mBluetoothLeService.readCharacteristic(characteristic);
-                        }
-                        sleep(1000);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();*/
-
     }
 
     @Override
@@ -258,6 +246,5 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
-
 
 }

@@ -132,7 +132,12 @@ public class BluetoothLeService extends Service {
             byte[] dataSet=characteristic.getValue();
             Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
             Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
-            intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]);
+            if(dataSet.length>=6){
+                intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]+","+dataSet[2]+","+dataSet[3]+dataSet[4]+","+dataSet[5]);
+            }
+            else {
+                intent.putExtra(EXTRA_DATA_SET, "0," + dataSet[0] + "," + dataSet[1]);
+            }
 
         }
         else {
