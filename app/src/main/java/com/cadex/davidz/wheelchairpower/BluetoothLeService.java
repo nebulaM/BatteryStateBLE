@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.util.List;
@@ -133,7 +134,7 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
             Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
             if(dataSet.length>=6){
-                intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]+","+dataSet[2]+","+dataSet[3]+dataSet[4]+","+dataSet[5]);
+                intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]+","+dataSet[2]+","+dataSet[3]+","+dataSet[4]+","+dataSet[5]);
             }
             else {
                 intent.putExtra(EXTRA_DATA_SET, "0," + dataSet[0] + "," + dataSet[1]);
@@ -233,6 +234,9 @@ public class BluetoothLeService extends Service {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
         }
+        ParcelUuid[] uuids=device.getUuids();
+        Log.e(TAG,"Device name is "+ device.getName());
+        //Log.e(TAG,"Device uuids "+ uuids.length);
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
@@ -348,7 +352,9 @@ public class BluetoothLeService extends Service {
         }
         BluetoothGattService Service = mBluetoothGatt.getService(service);
         if(Service==null){
+            Log.e(TAG,"Service is "+service);
             Log.e(TAG,"Service not found when attempt to getGattCharacteristic");
+            Log.e(TAG,"If you are sure that you connected to the proper device, then please restart bluetooth on your phone.");
             return null;
         }
         BluetoothGattCharacteristic charac = Service.getCharacteristic(characteristic);

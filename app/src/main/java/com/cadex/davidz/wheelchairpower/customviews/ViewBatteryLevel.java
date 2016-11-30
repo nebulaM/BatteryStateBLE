@@ -80,7 +80,7 @@ public class ViewBatteryLevel extends View {
             //
             // The R.styleable.ViewBatteryLevel_* constants represent the index for
             // each custom attribute in the R.styleable.ViewBatteryLevel array.
-            mClockwise = a.getBoolean(R.styleable.ViewBatteryLevel_clockwise, false);
+            mClockwise = true;
             mRadius=a.getDimension(R.styleable.ViewBatteryLevel_radius,20.0f);
            
         } finally {
@@ -110,7 +110,7 @@ public class ViewBatteryLevel extends View {
         startCord = .03f * mRadius;
         outerCircle.set(startCord, startCord, mDiameter-startCord, mDiameter-startCord);
 
-        startCord = .3f * mRadius;
+        startCord = .2f * mRadius;
         innerCircle.set(startCord, startCord, mDiameter-startCord, mDiameter-startCord);
 
     }
@@ -172,7 +172,7 @@ public class ViewBatteryLevel extends View {
 
         if(mBatteryLevel>30){
             // green
-            mPaint.setColor(0xff38e100);//, 0xff38e100);
+            mPaint.setColor(0xff3fff00);//, 0xff38e100);
         }
         else if(mBatteryLevel>15){
             // yellow

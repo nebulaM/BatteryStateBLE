@@ -61,7 +61,7 @@
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/textViewBatHealthTitle"
             custom:width="230dp"
-            custom:height="25dp"
+            custom:height="15dp"
             android:layout_marginLeft="10dp"/>
 
         <TextView android:id="@+id/textViewBatHealthPercent"
