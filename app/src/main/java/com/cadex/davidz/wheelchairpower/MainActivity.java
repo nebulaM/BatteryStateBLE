@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
-    private boolean mSubscribe=true;
+    private boolean mSubscribe=false;
     //an integer >0
     private final int REQUEST_ENABLE_BT=1;
 
@@ -172,6 +173,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+                mBluetoothLeService.setCharacteristicNotification(characteristic, true);
+            }
+        },1000);
+
 
 
     }
