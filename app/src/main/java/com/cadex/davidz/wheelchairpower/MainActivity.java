@@ -1,17 +1,4 @@
-/*Copyright 2016 nebulaM 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
+
 package com.cadex.nebulaM.wheelchairpower;
 
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -93,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
                 int[] arr=new int[4];
 
-                    String[] dataSet = dataIn.split(",");
+                String[] dataSet = dataIn.split(",");
                 if(dataSet.length>=7) {
                     for(int i=0;i<4;++i) {
                         int data= Integer.parseInt(dataSet[3+i]);
@@ -103,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                         arr[i]=data;
                     }
                     Toast.makeText(getApplicationContext(),  arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3],
-                                    Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG).show();
                 }
                 mBatteryDisplayFragment.updateUI(dataIn);
             }
@@ -118,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-       // getActionBar().setTitle(mDeviceName);
-       // getActionBar().setDisplayHomeAsUpEnabled(true);
+        // getActionBar().setTitle(mDeviceName);
+        // getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initializes Bluetooth adapter.
        /* final BluetoothManager bluetoothManager =
@@ -173,14 +160,15 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        final Handler handler = new Handler();
+        //TODO:Resolve this crash
+        /*final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 mBluetoothLeService.setCharacteristicNotification(characteristic, true);
             }
-        },1000);
+        },1000);*/
 
 
 
@@ -211,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         if(characteristic!=null) {
             mBluetoothLeService.setCharacteristicNotification(characteristic, false);
         }
-       // mBluetoothLeService.disconnect();
+        // mBluetoothLeService.disconnect();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
     }

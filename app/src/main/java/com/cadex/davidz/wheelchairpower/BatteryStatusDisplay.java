@@ -1,17 +1,4 @@
-/*Copyright 2016 nebulaM 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
+
 package com.cadex.nebulaM.wheelchairpower;
 
 import android.app.Fragment;
@@ -22,33 +9,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.cadex.nebulaM.wheelchairpower.customviews.ViewBatteryHealth;
-import com.cadex.nebulaM.wheelchairpower.customviews.ViewBatteryLevel;
+import com.cadex.nebulaM.wheelchairpower.customviews.DonutView;
 
-import static android.content.ContentValues.TAG;
 
-/**
- * Created by nebulaM on 10/4/2016.
- */
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
-    private TextView mTextBatteryLevelPercent;
-    private TextView mTextBatteryHealthPercent;
+    private TextView mTextBatteryCharge;
+    private TextView mTextBatteryHealth;
 
-    private ViewBatteryLevel mViewBatteryLevel;
-    private ViewBatteryHealth mViewBatteryHealth;
+    private DonutView mBatteryCharge;
+    private DonutView mViewBatteryHealth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.battery_status, container, false);
-        mViewBatteryLevel = (ViewBatteryLevel) view.findViewById(R.id.ViewBatteryLevel);
-        mViewBatteryHealth = (ViewBatteryHealth) view.findViewById(R.id.ViewBatteryHealth);
-        mTextBatteryLevelPercent = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
-        mTextBatteryHealthPercent =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
+        mBatteryCharge = (DonutView) view.findViewById(R.id.ViewBatteryLevel);
+        mViewBatteryHealth = (DonutView) view.findViewById(R.id.ViewBatteryHealth);
+        mTextBatteryCharge = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
+        mTextBatteryHealth =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
 
-        mViewBatteryLevel.setBatteryLevel(0);
-        mViewBatteryHealth.setBatteryHealth(0);
+        mBatteryCharge.setData(0);
+        mViewBatteryHealth.setData(0);
 
 
 
@@ -59,34 +41,45 @@ public class BatteryStatusDisplay extends Fragment {
         Log.d(TAG,"input data string to battery UI:"+dataIn);
         String[] dataSet = dataIn.split(",");
         int errorCode=Integer.parseInt(dataSet[0]);
-        int batteryLevel=Integer.parseInt(dataSet[1]);
-        int batteryHealth=Integer.parseInt(dataSet[2]);
-        if(errorCode==0){
-            mViewBatteryLevel.setBatteryLevel(batteryLevel);
-            mViewBatteryHealth.setBatteryHealth(batteryHealth);
-            mTextBatteryLevelPercent.setText(dataSet[1] + "%");
-            mTextBatteryHealthPercent.setText(dataSet[2] + "%");
+        switch (errorCode){
+            case 0:
+                int batteryLevel=Integer.parseInt(dataSet[1]);
+                int batteryHealth=Integer.parseInt(dataSet[2]);
+                mBatteryCharge.setData(batteryLevel);
+                mViewBatteryHealth.setData(batteryHealth);
+                mTextBatteryCharge.setText(bound(dataSet[1]));
+                mTextBatteryHealth.setText(bound(dataSet[2]));
+                break;
+            case 1:
+                mBatteryCharge.setData(0);
+                mViewBatteryHealth.setData(0);
+                mTextBatteryCharge.setText("Wrong Device");
+                mTextBatteryHealth.setText("");
+                break;
+            case 2:
+                mBatteryCharge.setData(0);
+                mViewBatteryHealth.setData(0);
+                mTextBatteryCharge.setText("Not Connected");
+                mTextBatteryHealth.setText("");
+                break;
+            case 3:
+                mBatteryCharge.setData(0);
+                mViewBatteryHealth.setData(0);
+                mTextBatteryCharge.setText("Connected");
+                mTextBatteryHealth.setText("");
+                break;
+            default:
+                break;
         }
-        else if(errorCode==1){
-            mViewBatteryLevel.setBatteryLevel(0);
-            mViewBatteryHealth.setBatteryHealth(0);
-            mTextBatteryLevelPercent.setText("Wrong Device");
-            mTextBatteryHealthPercent.setText("");
-        }
-        else if(errorCode==2){
-            mViewBatteryLevel.setBatteryLevel(0);
-            mViewBatteryHealth.setBatteryHealth(0);
-            mTextBatteryLevelPercent.setText("Not Connected");
-            mTextBatteryHealthPercent.setText("");
-        }
-        else if(errorCode==3){
-            mViewBatteryLevel.setBatteryLevel(0);
-            mViewBatteryHealth.setBatteryHealth(0);
-            mTextBatteryLevelPercent.setText("Connected");
-            mTextBatteryHealthPercent.setText("");
-            return;
-        }
-
     }
 
+    private String bound(String in){
+        if(Integer.parseInt(in)>100){
+            return String.valueOf(100);
+        }else if(Integer.parseInt(in)<0){
+            return String.valueOf(0);
+        }else {
+            return in;
+        }
+    }
 }

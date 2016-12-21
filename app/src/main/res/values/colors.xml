@@ -8,5 +8,9 @@
 
 
     <color name="font_color">#f8f8ff</color>
+    <color name="green">#30a41d</color>
+    <color name="green_fade">#99ea8c</color>
+    <color name="orange">#f7a420</color>
+    <color name="orange_fade">#fde6c5</color>
 
 </resources>
