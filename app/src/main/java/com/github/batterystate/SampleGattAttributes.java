@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cadex.nebulaM.wheelchairpower;
+package com.github.batteryState;
 
 import java.util.HashMap;
 

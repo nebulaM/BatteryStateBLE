@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.cadex.nebulaM.wheelchairpower.MainActivity">
+    tools:context="com.github.batteryState.MainActivity">
 
         <FrameLayout
             android:layout_weight="1"
@@ -14,7 +14,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             >
-                <com.cadex.nebulaM.wheelchairpower.customviews.DonutView
+                <com.github.batteryState.DonutView
                     android:id="@+id/ViewBatteryLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             >
-                <com.cadex.nebulaM.wheelchairpower.customviews.DonutView
+                <com.github.batteryState.DonutView
                     android:id="@+id/ViewBatteryHealth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -1,5 +1,5 @@
 
-package com.cadex.nebulaM.wheelchairpower;
+package com.github.batteryState;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.cadex.nebulaM.wheelchairpower.customviews.DonutView;
+import com.github.batteryState.R;
 
 
 public class BatteryStatusDisplay extends Fragment {

@@ -1,5 +1,5 @@
 
-package com.cadex.nebulaM.wheelchairpower.customviews;
+package com.github.batteryState;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 
-import com.cadex.nebulaM.wheelchairpower.R;
+import com.github.batteryState.R;
 
 
 public class DonutView extends View {

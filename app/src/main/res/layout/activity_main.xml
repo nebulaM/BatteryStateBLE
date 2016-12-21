@@ -4,7 +4,7 @@
     android:id="@+id/frag_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cadex.nebulaM.wheelchairpower.MainActivity"
+    tools:context="com.github.batteryState.MainActivity"
     android:background="@android:color/white">
 
     <ImageButton

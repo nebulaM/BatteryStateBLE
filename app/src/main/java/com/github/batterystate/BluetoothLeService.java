@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cadex.nebulaM.wheelchairpower;
+package com.github.batteryState;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -29,7 +29,6 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
