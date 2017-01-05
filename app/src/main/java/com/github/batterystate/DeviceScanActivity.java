@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.batteryState;
+package com.github.batterystate;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -36,8 +36,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.github.batteryState.R;
 
 import java.util.ArrayList;
 

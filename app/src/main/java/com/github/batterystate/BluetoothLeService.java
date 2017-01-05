@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.batteryState;
+package com.github.batterystate;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;

@@ -4,7 +4,7 @@
     android:id="@+id/frag_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.batteryState.MainActivity"
+    tools:context="com.github.batterystate.MainActivity"
     android:background="@android:color/white">
 
     <ImageButton

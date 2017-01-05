@@ -1,5 +1,5 @@
 
-package com.github.batteryState;
+package com.github.batterystate;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.github.batteryState.R;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -161,15 +160,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //TODO:Resolve this crash
-        /*final Handler handler = new Handler();
+        final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 mBluetoothLeService.setCharacteristicNotification(characteristic, true);
             }
-        },1000);*/
+        },1600);
 
 
 

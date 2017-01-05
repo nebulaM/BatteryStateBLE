@@ -1,5 +1,5 @@
 
-package com.github.batteryState;
+package com.github.batterystate;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,9 +10,6 @@ import android.graphics.RectF;
 
 import android.util.AttributeSet;
 import android.view.View;
-
-
-import com.github.batteryState.R;
 
 
 public class DonutView extends View {

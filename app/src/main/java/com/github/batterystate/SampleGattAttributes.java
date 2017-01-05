@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.batteryState;
+package com.github.batterystate;
 
 import java.util.HashMap;
 
