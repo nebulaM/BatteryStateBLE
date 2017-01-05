@@ -6,5 +6,5 @@ More detailed document is coming soon...
 
 UI orginally designed in photoshop by [CharlieYJH](https://github.com/CharlieYJH) 
 
-![alt tag](https://github.com/nebulaM/BatteryStateBLE/blob/master/screenshots/Screenshot_20170105-001714.png)
+<img src="https://github.com/nebulaM/BatteryStateBLE/blob/master/screenshots/Screenshot_20170105-001714.png" width="540px" height="960px"/>
 
