@@ -21,4 +21,8 @@
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
+
+
+    <string name="notify_low_bat_title">Low Battery</string>
+    <string name="notify_low_bat_text">WheelChair battery level is low!</string>
 </resources>

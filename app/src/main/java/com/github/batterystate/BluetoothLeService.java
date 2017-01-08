@@ -16,6 +16,7 @@
 
 package com.github.batterystate;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -31,6 +32,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.List;
@@ -68,7 +71,9 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_Battery_Level_Percent =UUID.fromString(SampleGattAttributes.Battery_Level_Percent);
 
-
+    private long mLastTimeNotify=0;
+    //TODO:currently use 5sec for testing purpose, should be much longer(~5 min)
+    private final long NOTIFY_INTERVAL=5000;
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -129,10 +134,10 @@ public class BluetoothLeService extends Service {
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
         if(UUID_Battery_Level_Percent.equals(characteristic.getUuid())){
-            Log.d(TAG, "battery data format UINT8.");
+            //Log.d(TAG, "battery data format UINT8.");
             byte[] dataSet=characteristic.getValue();
             Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
-            Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
+            //Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
             //length is data set plus error code
             StringBuilder sb=new StringBuilder(1+dataSet.length);
             //errorCode is 0
@@ -141,7 +146,34 @@ public class BluetoothLeService extends Service {
                 sb.append(',');
                 sb.append(c);
             }
-            Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
+            //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
+            //battery level
+            if(dataSet[0]<20){
+                if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
+                    Log.d(TAG,"show Notification!");
+
+                    Thread t=new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                            v.vibrate(800);
+                        }
+                    });
+                    t.start();
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_low_battery)
+                                    .setContentTitle(getText(R.string.notify_low_bat_title))
+                                    .setContentText(getText(R.string.notify_low_bat_text));
+                    NotificationManager mNotifyMgr =
+                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    mNotifyMgr.notify(1, mBuilder.build());
+
+                    try{t.join();}catch (InterruptedException e){e.printStackTrace();}
+
+                    mLastTimeNotify=System.currentTimeMillis();
+
+                }
+            }
             intent.putExtra(EXTRA_DATA_SET, sb.toString());
 
         }
