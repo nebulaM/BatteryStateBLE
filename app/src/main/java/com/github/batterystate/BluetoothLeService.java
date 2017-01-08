@@ -124,6 +124,7 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
+
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
@@ -132,12 +133,16 @@ public class BluetoothLeService extends Service {
             byte[] dataSet=characteristic.getValue();
             Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
             Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
-            if(dataSet.length>=6){
-                intent.putExtra(EXTRA_DATA_SET, "0,"+dataSet[0]+","+dataSet[1]+","+dataSet[2]+","+dataSet[3]+","+dataSet[4]+","+dataSet[5]);
+            //length is data set plus error code
+            StringBuilder sb=new StringBuilder(1+dataSet.length);
+            //errorCode is 0
+            sb.append('0');
+            for(byte c : dataSet){
+                sb.append(',');
+                sb.append(c);
             }
-            else {
-                intent.putExtra(EXTRA_DATA_SET, "0," + dataSet[0] + "," + dataSet[1]);
-            }
+            Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
+            intent.putExtra(EXTRA_DATA_SET, sb.toString());
 
         }
         else {
