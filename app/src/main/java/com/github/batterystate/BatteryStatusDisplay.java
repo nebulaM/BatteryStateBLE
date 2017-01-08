@@ -35,18 +35,14 @@ public class BatteryStatusDisplay extends Fragment {
         return view;
     }
 
-    protected void updateUI(String dataIn){
-        Log.d(TAG,"input data string to battery UI:"+dataIn);
-        String[] dataSet = dataIn.split(",");
-        int errorCode=Integer.parseInt(dataSet[0]);
+    protected void updateUI(int errorCode, int batteryLevel, int batteryHealth){
+
         switch (errorCode){
             case 0:
-                int batteryLevel=Integer.parseInt(dataSet[1]);
-                int batteryHealth=Integer.parseInt(dataSet[2]);
                 mBatteryCharge.setData(batteryLevel);
                 mViewBatteryHealth.setData(batteryHealth);
-                mTextBatteryCharge.setText(bound(dataSet[1]));
-                mTextBatteryHealth.setText(bound(dataSet[2]));
+                mTextBatteryCharge.setText(bound(Integer.toString(batteryLevel)));
+                mTextBatteryHealth.setText(bound(Integer.toString(batteryHealth)));
                 break;
             case 1:
                 mBatteryCharge.setData(0);

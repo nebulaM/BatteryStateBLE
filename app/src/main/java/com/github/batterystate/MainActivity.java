@@ -31,10 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
     private boolean mSubscribe=false;
-    //an integer >0
-    private final int REQUEST_ENABLE_BT=1;
 
-    private String BLEDataIn;
+    protected Toast mToastMSG;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -57,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    private final boolean showIP=false;
+
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
     // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
@@ -69,19 +70,21 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
-                mBatteryDisplayFragment.updateUI("3,0,0");
+                mBatteryDisplayFragment.updateUI(3,0,0);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
                 //errorCode=2, not connected
-                mBatteryDisplayFragment.updateUI("2,0,0");
+                mBatteryDisplayFragment.updateUI(2,0,0);
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //errorCode=0
                 String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
-                int[] arr=new int[4];
-
                 String[] dataSet = dataIn.split(",");
-                if(dataSet.length>=7) {
+                int errorCode=Integer.parseInt(dataSet[0]);
+                int batteryLevel=Integer.parseInt(dataSet[1]);
+                int batteryHealth=Integer.parseInt(dataSet[2]);
+                if(showIP && dataIn.length()>=7) {
+                    int[] arr=new int[4];
                     for(int i=0;i<4;++i) {
                         int data= Integer.parseInt(dataSet[3+i]);
                         if(data<0){
@@ -89,10 +92,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         arr[i]=data;
                     }
-                    Toast.makeText(getApplicationContext(),  arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3],
-                            Toast.LENGTH_LONG).show();
+                    String ip=arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3];
+                    mToastMSG.setText(ip);
+                    mToastMSG.show();
+
                 }
-                mBatteryDisplayFragment.updateUI(dataIn);
+                mBatteryDisplayFragment.updateUI(errorCode,batteryLevel,batteryHealth);
+
             }
         }
     };
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-
+        mToastMSG = Toast.makeText(this,"",Toast.LENGTH_SHORT);
         // getActionBar().setTitle(mDeviceName);
         // getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 if(characteristic==null){
                     //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI("1,0,0");
+                    mBatteryDisplayFragment.updateUI(1,0,0);
                 }
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
@@ -146,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 if(characteristic==null){
                     //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI("1,0,0");
+                    mBatteryDisplayFragment.updateUI(1,0,0);
                 }
                 else {
                     mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
