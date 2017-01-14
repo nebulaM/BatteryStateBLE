@@ -4,6 +4,7 @@ package com.github.batterystate;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
     private TextView mTextBatteryCharge;
+    private TextView mTextBatteryChargeTitle;
     private TextView mTextBatteryHealth;
 
     private DonutView mBatteryCharge;
@@ -27,16 +29,19 @@ public class BatteryStatusDisplay extends Fragment {
         mTextBatteryCharge = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
         mTextBatteryHealth =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
 
-        mBatteryCharge.setData(0);
-        mViewBatteryHealth.setData(0);
-
-
+        mTextBatteryChargeTitle= (TextView) view.findViewById(R.id.textViewBatLevelTitle);
 
         return view;
     }
 
     protected void updateUI(int errorCode, int batteryLevel, int batteryHealth){
-
+        if(errorCode==0){
+            mTextBatteryCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
+            mTextBatteryChargeTitle.setText(getText(R.string.charge));
+        }else{
+            mTextBatteryCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+            mTextBatteryChargeTitle.setText("");
+        }
         switch (errorCode){
             case 0:
                 mBatteryCharge.setData(batteryLevel);
@@ -47,19 +52,19 @@ public class BatteryStatusDisplay extends Fragment {
             case 1:
                 mBatteryCharge.setData(0);
                 mViewBatteryHealth.setData(0);
-                mTextBatteryCharge.setText("Wrong Device");
+                mTextBatteryCharge.setText(getText(R.string.wrong_device));
                 mTextBatteryHealth.setText("");
                 break;
             case 2:
                 mBatteryCharge.setData(0);
                 mViewBatteryHealth.setData(0);
-                mTextBatteryCharge.setText("Not Connected");
+                mTextBatteryCharge.setText(getText(R.string.no_connection));
                 mTextBatteryHealth.setText("");
                 break;
             case 3:
                 mBatteryCharge.setData(0);
                 mViewBatteryHealth.setData(0);
-                mTextBatteryCharge.setText("Connected");
+                mTextBatteryCharge.setText(getText(R.string.connected));
                 mTextBatteryHealth.setText("");
                 break;
             default:
