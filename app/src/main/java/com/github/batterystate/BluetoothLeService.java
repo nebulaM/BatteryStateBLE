@@ -36,6 +36,7 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,9 +72,6 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_Battery_Level_Percent =UUID.fromString(SampleGattAttributes.Battery_Level_Percent);
 
-    private long mLastTimeNotify=0;
-    //TODO:currently use 5sec for testing purpose, should be much longer(~5 min)
-    private final long NOTIFY_INTERVAL=5000;
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -129,6 +127,11 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
+    private long mLastTimeNotify=0;
+    private long mLastTimeSendToCloud=0;
+    //TODO:currently use 5sec for testing purpose, should be much longer(~5 min)
+    private final long NOTIFY_INTERVAL=300000;
+    private final long SEND_TO_CLOUD_PERIOD=3000;
 
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
@@ -174,6 +177,10 @@ public class BluetoothLeService extends Service {
 
                 }
             }
+            if(System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD) {
+                sendToCloud(dataSet[0], dataSet[1]);
+                mLastTimeSendToCloud=System.currentTimeMillis();
+            }
             intent.putExtra(EXTRA_DATA_SET, sb.toString());
 
         }
@@ -188,6 +195,19 @@ public class BluetoothLeService extends Service {
             }
         }
         sendBroadcast(intent);
+    }
+
+
+    private void sendToCloud(byte level, byte health){
+        try {
+            //TODO:public IP
+            NetworkClient mNetworkClient=new NetworkClient("192.168.1.67",6111);
+            Log.d(TAG,"try send data by network");
+            mNetworkClient.sendRequest("ID:TBD;TIME:TBD;LEVEL:"+level+";HEALTH:"+health);
+            mNetworkClient.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public class LocalBinder extends Binder {
