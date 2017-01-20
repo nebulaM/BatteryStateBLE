@@ -36,6 +36,15 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,10 +80,14 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_Battery_Level_Percent =UUID.fromString(SampleGattAttributes.Battery_Level_Percent);
 
-    private long mLastTimeNotify=0;
-    //TODO:currently use 5sec for testing purpose, should be much longer(~5 min)
-    private final long NOTIFY_INTERVAL=5000;
+    private long mLastTimeNotify;
+    private long mLastTimeSendToCloud;
 
+    private final long NOTIFY_INTERVAL=300000;
+
+    private final long SEND_TO_CLOUD_PERIOD=10000;
+    private BatteryObject mBatteryData2AWS;
+    private DynamoDBMapper mapperAWSDB;
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -129,6 +142,20 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
+    @Override
+    public void onCreate(){
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "", // Identity Pool ID
+                Regions.US_WEST_2 // Region
+        );
+        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
+        mapperAWSDB = new DynamoDBMapper(ddbClient);
+        //give some time to wait for battery data gets stable
+        mLastTimeNotify=System.currentTimeMillis();
+        mLastTimeSendToCloud=System.currentTimeMillis();
+    }
 
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
@@ -174,6 +201,21 @@ public class BluetoothLeService extends Service {
 
                 }
             }
+
+            //send to cloud server
+            if(System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD) {
+                final String stringData=sb.toString();
+                final byte health=dataSet[1];
+                Thread t=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendToCloud(stringData);
+                    }
+                });
+                t.start();
+                mLastTimeSendToCloud=System.currentTimeMillis();
+            }
+
             intent.putExtra(EXTRA_DATA_SET, sb.toString());
 
         }
@@ -188,6 +230,25 @@ public class BluetoothLeService extends Service {
             }
         }
         sendBroadcast(intent);
+    }
+    protected static Calendar c = Calendar.getInstance();
+    protected static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private void sendToCloud(String data){
+        if(mBatteryData2AWS==null){
+            mBatteryData2AWS=new BatteryObject("no-serial-num-4-now");
+        }
+        try {
+            String[] dataSet = data.split(",");
+            if(dataSet[0].equals("0")){
+                mBatteryData2AWS.setCharge(dataSet[1]);
+                mBatteryData2AWS.setHealth(dataSet[2]);
+                mBatteryData2AWS.setUpdate(df.format(c.getTime()));
+                //Log.d(TAG,"send to dynamodb: charge "+mCharge+" health "+mHealth+" at "+mLastUpdate);
+            }
+            mapperAWSDB.save(mBatteryData2AWS);
+        }catch (AmazonServiceException e){
+            e.printStackTrace();
+        }
     }
 
     public class LocalBinder extends Binder {
