@@ -177,8 +177,17 @@ public class BluetoothLeService extends Service {
 
                 }
             }
+
             if(System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD) {
-                sendToCloud(dataSet[0], dataSet[1]);
+                final byte level=dataSet[0];
+                final byte health=dataSet[1];
+                Thread t=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendToCloud(level,health);
+                    }
+                });
+                t.start();
                 mLastTimeSendToCloud=System.currentTimeMillis();
             }
             intent.putExtra(EXTRA_DATA_SET, sb.toString());
