@@ -146,7 +146,8 @@ public class BluetoothLeService extends Service {
     public void onCreate(){
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
-                "", // Identity Pool ID
+                //TODO:Add Pool ID
+                "POLL ID", // Identity Pool ID
                 Regions.US_WEST_2 // Region
         );
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
