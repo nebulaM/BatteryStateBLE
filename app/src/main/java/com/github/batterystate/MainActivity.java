@@ -25,14 +25,13 @@ public class MainActivity extends AppCompatActivity {
     //hardcode to our bluetooth server for now
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    private String mDeviceName;
     private String mDeviceAddress;
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
     private boolean mSubscribe=false;
 
-    protected Toast mToastMSG;
+    protected Toast mToast;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    private final boolean showIP=false;
+    private final boolean SHOW_IP =true;
 
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
@@ -83,19 +82,21 @@ public class MainActivity extends AppCompatActivity {
                 int errorCode=Integer.parseInt(dataSet[0]);
                 int batteryLevel=Integer.parseInt(dataSet[1]);
                 int batteryHealth=Integer.parseInt(dataSet[2]);
-                if(showIP && dataIn.length()>=7) {
-                    int[] arr=new int[4];
-                    for(int i=0;i<4;++i) {
-                        int data= Integer.parseInt(dataSet[3+i]);
-                        if(data<0){
-                            data=256+data;
+                if(SHOW_IP && !mToast.getView().isShown()) {
+                    if(dataSet.length>=6) {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < 4; ++i) {
+                            int data = Integer.parseInt(dataSet[3 + i]);
+                            if (data < 0) {
+                                data = 256 + data;
+                            }
+                            sb.append(data);
+                            sb.append('.');
                         }
-                        arr[i]=data;
+                        sb.setLength(sb.length()-1);
+                        mToast.setText(sb.toString());
+                        mToast.show();
                     }
-                    String ip=arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3];
-                    mToastMSG.setText(ip);
-                    mToastMSG.show();
-
                 }
                 mBatteryDisplayFragment.updateUI(errorCode,batteryLevel,batteryHealth);
 
@@ -108,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        //mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-        mToastMSG = Toast.makeText(this,"",Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
         // getActionBar().setTitle(mDeviceName);
         // getActionBar().setDisplayHomeAsUpEnabled(true);
 
