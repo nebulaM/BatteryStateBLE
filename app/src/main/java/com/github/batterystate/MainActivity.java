@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     //hardcode to our bluetooth server for now
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String DEVICE_NAME="Battery";
     private String mDeviceAddress;
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;

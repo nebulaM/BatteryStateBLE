@@ -254,8 +254,10 @@ public class DeviceScanActivity extends ListActivity {
         }
 
         public void addDevice(BluetoothDevice device) {
-            if(!mLeDevices.contains(device)) {
-                mLeDevices.add(device);
+            if(device!=null && device.getName()!=null) {
+                if (!mLeDevices.contains(device) && device.getName().equals(MainActivity.DEVICE_NAME)) {
+                    mLeDevices.add(device);
+                }
             }
         }
 
