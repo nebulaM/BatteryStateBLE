@@ -29,6 +29,8 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
@@ -235,21 +237,31 @@ public class BluetoothLeService extends Service {
     protected static Calendar c = Calendar.getInstance();
     protected static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private void sendToCloud(String data){
-        if(mBatteryData2AWS==null){
-            mBatteryData2AWS=new BatteryObject("no-serial-num-4-now");
-        }
-        try {
-            String[] dataSet = data.split(",");
-            if(dataSet[0].equals("0")){
-                mBatteryData2AWS.setCharge(dataSet[1]);
-                mBatteryData2AWS.setHealth(dataSet[2]);
-                mBatteryData2AWS.setUpdate(df.format(c.getTime()));
-                //Log.d(TAG,"send to dynamodb: charge "+mCharge+" health "+mHealth+" at "+mLastUpdate);
+        if(isNetworkAvailable()) {
+            Log.d(TAG,"has network");
+            if (mBatteryData2AWS == null) {
+                mBatteryData2AWS = new BatteryObject("no-serial-num-4-now");
             }
-            mapperAWSDB.save(mBatteryData2AWS);
-        }catch (AmazonServiceException e){
-            e.printStackTrace();
+            try {
+                String[] dataSet = data.split(",");
+                if (dataSet[0].equals("0")) {
+                    mBatteryData2AWS.setCharge(dataSet[1]);
+                    mBatteryData2AWS.setHealth(dataSet[2]);
+                    mBatteryData2AWS.setUpdate(df.format(c.getTime()));
+                    Log.d(TAG,"send data to dynamodb");
+                }
+                mapperAWSDB.save(mBatteryData2AWS);
+            } catch (AmazonServiceException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public class LocalBinder extends Binder {
