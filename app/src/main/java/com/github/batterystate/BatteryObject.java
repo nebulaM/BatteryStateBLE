@@ -22,8 +22,7 @@ import java.util.Calendar;
 
 
 
-    public BatteryObject(String serialNum){
-        setSerialNum(serialNum);
+    public BatteryObject(){
         //TODO:find a way to determine battery type
         setBatteryType("TEST");
     }

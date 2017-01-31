@@ -45,6 +45,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -149,7 +150,7 @@ public class BluetoothLeService extends Service {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
                 //TODO:Add Pool ID
-                "POLL ID", // Identity Pool ID
+                "", // Identity Pool ID
                 Regions.US_WEST_2 // Region
         );
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
@@ -166,19 +167,24 @@ public class BluetoothLeService extends Service {
         if(UUID_Battery_Level_Percent.equals(characteristic.getUuid())){
             //Log.d(TAG, "battery data format UINT8.");
             byte[] dataSet=characteristic.getValue();
-            Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
-            //Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
+            //error from BLE server
+            if(dataSet[0]==2){
+                return;
+            }
+            Log.d(TAG, String.format("Received battery percent: %d", dataSet[7]));
+            //Log.d(TAG, String.format("Received battery health: %d", dataSet[8]));
             //length is data set plus error code
-            StringBuilder sb=new StringBuilder(1+dataSet.length);
+            StringBuilder sb=new StringBuilder();
             //errorCode is 0
             sb.append('0');
-            for(byte c : dataSet){
+            //1-6 unique ID not append to this sb, 7 level, 8 health
+            for(int i=7;i<dataSet.length;i++){
                 sb.append(',');
-                sb.append(c);
+                sb.append(dataSet[i]);
             }
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
-            if(dataSet[0]<20){
+            if(dataSet[7]<20){
                 if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
                     Log.d(TAG,"show Notification!");
 
@@ -207,12 +213,17 @@ public class BluetoothLeService extends Service {
 
             //send to cloud server
             if(System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD) {
-                final String stringData=sb.toString();
-                final byte health=dataSet[1];
+                StringBuilder sbSerialNumber=new StringBuilder(6);
+                for(int i=1;i<=6;i++){
+                    sbSerialNumber.append(dataSet[i]);
+                }
+                final String serialNumber=sbSerialNumber.toString();
+                final String charge=Integer.toString((int)dataSet[7]);
+                final String health=Integer.toString((int)dataSet[8]);
                 Thread t=new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sendToCloud(stringData);
+                        sendToCloud(serialNumber,charge,health);
                     }
                 });
                 t.start();
@@ -236,20 +247,19 @@ public class BluetoothLeService extends Service {
     }
     protected static Calendar c = Calendar.getInstance();
     protected static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private void sendToCloud(String data){
+    private void sendToCloud(String serialNumber, String charge, String health){
         if(isNetworkAvailable()) {
             Log.d(TAG,"has network");
             if (mBatteryData2AWS == null) {
-                mBatteryData2AWS = new BatteryObject("no-serial-num-4-now");
+                mBatteryData2AWS = new BatteryObject();
             }
             try {
-                String[] dataSet = data.split(",");
-                if (dataSet[0].equals("0")) {
-                    mBatteryData2AWS.setCharge(dataSet[1]);
-                    mBatteryData2AWS.setHealth(dataSet[2]);
-                    mBatteryData2AWS.setUpdate(df.format(c.getTime()));
-                    Log.d(TAG,"send data to dynamodb");
-                }
+                mBatteryData2AWS.setSerialNum(serialNumber);
+                mBatteryData2AWS.setCharge(charge);
+                mBatteryData2AWS.setHealth(health);
+                mBatteryData2AWS.setUpdate(df.format(c.getTime()));
+                Log.d(TAG,"send data to dynamodb, serialNumber: "+serialNumber+
+                        " charge: "+charge+" health "+health);
                 mapperAWSDB.save(mBatteryData2AWS);
             } catch (AmazonServiceException e) {
                 e.printStackTrace();
