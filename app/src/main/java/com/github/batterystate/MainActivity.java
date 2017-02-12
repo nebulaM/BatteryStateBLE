@@ -82,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 String[] dataSet = dataIn.split(",");
                 int errorCode=Integer.parseInt(dataSet[0]);
                 int batteryLevel=Integer.parseInt(dataSet[1]);
+                if(batteryLevel<0){
+                    batteryLevel+=256;
+                }
                 int batteryHealth=Integer.parseInt(dataSet[2]);
+                if(batteryHealth<0){
+                    batteryHealth+=256;
+                }
                 if(SHOW_IP && !mToast.getView().isShown()) {
                     if(dataSet.length>=6) {
                         StringBuilder sb = new StringBuilder();
@@ -173,7 +179,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                mBluetoothLeService.setCharacteristicNotification(characteristic, true);
+                if(characteristic!=null) {
+                    mBluetoothLeService.setCharacteristicNotification(characteristic, true);
+                }
             }
         },1600);
 
