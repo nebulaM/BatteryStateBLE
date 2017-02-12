@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
-    private boolean mSubscribe=false;
+    private boolean mSubscribe=true;
 
     protected Toast mToast;
 
@@ -70,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
-                mBatteryDisplayFragment.updateUI(3,0,0);
+                //mBatteryDisplayFragment.updateUI(3,0,0);
+                //auto subscribe BLE channel
+                mSubscribe=true;
+                subscribeBLE();
+
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
@@ -153,24 +157,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton subscribeBLE = (ImageButton) findViewById(R.id.setNotification);
-        subscribeBLE.setOnClickListener(new View.OnClickListener() {
+        final ImageButton subscribeBLEBtn = (ImageButton) findViewById(R.id.setNotification);
+        subscribeBLEBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                if(characteristic==null){
-                    //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI(1,0,0);
-                }
-                else {
-                    mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
-                    if(mSubscribe){
-                        mSubscribe=false;
-                    }
-                    else{
-                        mSubscribe=true;
-                    }
-                }
+                subscribeBLE();
 
             }
         });
@@ -178,15 +169,32 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                if(characteristic!=null) {
-                    mBluetoothLeService.setCharacteristicNotification(characteristic, true);
-                }
+                mSubscribe=true;
+                subscribeBLE();
             }
         },1600);
 
+    }
 
+    private void subscribeBLE(){
+        BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+        if(characteristic==null){
+            //errorCode=1,wrong device
+            mBatteryDisplayFragment.updateUI(1,0,0);
+        }
+        else {
+            if(mSubscribe){
+                mToast.setText(R.string.subscribe);
+                mToast.show();
 
+            }
+            else{
+                mToast.setText(R.string.unSubscribe);
+                mToast.show();
+            }
+            mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
+            mSubscribe=!mSubscribe;
+        }
     }
 
     @Override
