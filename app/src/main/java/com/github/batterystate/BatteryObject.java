@@ -20,8 +20,6 @@ import java.util.Calendar;
     private String mLastUpdate;
     private String mBatteryType;
 
-
-
     public BatteryObject(){
         //TODO:find a way to determine battery type
         setBatteryType("TEST");
@@ -47,7 +45,8 @@ import java.util.Calendar;
         return mHealth;
     }
     public void setHealth(String health){
-        mHealth=health;
+        mHealth=BatteryStatusDisplay.bound(health);
+        Log.d(TAG,"@setHealth: battery health "+mHealth);
     }
 
     @DynamoDBAttribute(attributeName = "Charge")
@@ -55,7 +54,8 @@ import java.util.Calendar;
         return mCharge;
     }
     public void setCharge(String charge){
-        mCharge=charge;
+        mCharge=BatteryStatusDisplay.bound(charge);
+        Log.d(TAG,"@setCharge: battery charge "+mCharge);
     }
 
     @DynamoDBAttribute(attributeName = "Last-Update")

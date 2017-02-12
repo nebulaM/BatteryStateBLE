@@ -42,6 +42,7 @@ public class BatteryStatusDisplay extends Fragment {
             mTextBatteryCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
             mTextBatteryChargeTitle.setText("");
         }
+        Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth);
         switch (errorCode){
             case 0:
                 mBatteryCharge.setData(batteryLevel);
@@ -72,10 +73,14 @@ public class BatteryStatusDisplay extends Fragment {
         }
     }
 
-    private String bound(String in){
-        if(Integer.parseInt(in)>100){
+    protected static String bound(String in){
+        int data=Integer.parseInt(in);
+        if(data<0){
+            data+=256;
+        }
+        if(data>100){
             return String.valueOf(100);
-        }else if(Integer.parseInt(in)<0){
+        }else if(data<0){
             return String.valueOf(0);
         }else {
             return in;

@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 //mBatteryDisplayFragment.updateUI(3,0,0);
                 //auto subscribe BLE channel
                 mSubscribe=true;
+                try{TimeUnit.SECONDS.sleep(1);}catch (InterruptedException e){e.printStackTrace();}
                 subscribeBLE();
 
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
