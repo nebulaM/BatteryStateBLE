@@ -1,10 +1,12 @@
 
 package com.github.batterystate;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -19,20 +21,22 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
     //hardcode to our bluetooth server for now
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    private String mDeviceName;
+    public static final String DEVICE_NAME="Battery";
     private String mDeviceAddress;
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
-    private boolean mSubscribe=false;
+    private boolean mSubscribe=true;
 
-    protected Toast mToastMSG;
+    protected Toast mToast;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -55,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-    private final boolean showIP=false;
-
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
     // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
@@ -70,34 +71,22 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
-                mBatteryDisplayFragment.updateUI(3,0,0);
+                //mBatteryDisplayFragment.updateUI(3,"");
+                //auto subscribe BLE channel
+                mSubscribe=true;
+                try{TimeUnit.SECONDS.sleep(1);}catch (InterruptedException e){e.printStackTrace();}
+                subscribeBLE();
+
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 invalidateOptionsMenu();
                 //errorCode=2, not connected
-                mBatteryDisplayFragment.updateUI(2,0,0);
+                mBatteryDisplayFragment.updateUI(2,"");
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //errorCode=0
                 String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
-                String[] dataSet = dataIn.split(",");
-                int errorCode=Integer.parseInt(dataSet[0]);
-                int batteryLevel=Integer.parseInt(dataSet[1]);
-                int batteryHealth=Integer.parseInt(dataSet[2]);
-                if(showIP && dataIn.length()>=7) {
-                    int[] arr=new int[4];
-                    for(int i=0;i<4;++i) {
-                        int data= Integer.parseInt(dataSet[3+i]);
-                        if(data<0){
-                            data=256+data;
-                        }
-                        arr[i]=data;
-                    }
-                    String ip=arr[0] + "." + arr[1] + "." + arr[2] + "." + arr[3];
-                    mToastMSG.setText(ip);
-                    mToastMSG.show();
 
-                }
-                mBatteryDisplayFragment.updateUI(errorCode,batteryLevel,batteryHealth);
+                mBatteryDisplayFragment.updateUI(0,dataIn);
 
             }
         }
@@ -108,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        //mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-        mToastMSG = Toast.makeText(this,"",Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
         // getActionBar().setTitle(mDeviceName);
         // getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -137,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 if(characteristic==null){
                     //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI(1,0,0);
+                    mBatteryDisplayFragment.updateUI(1,"");
                 }
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
@@ -145,38 +134,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton subscribeBLE = (ImageButton) findViewById(R.id.setNotification);
-        subscribeBLE.setOnClickListener(new View.OnClickListener() {
+        final ImageButton subscribeBLEBtn = (ImageButton) findViewById(R.id.setNotification);
+        subscribeBLEBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                if(characteristic==null){
-                    //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI(1,0,0);
-                }
-                else {
-                    mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
-                    if(mSubscribe){
-                        mSubscribe=false;
-                    }
-                    else{
-                        mSubscribe=true;
-                    }
-                }
+                subscribeBLE();
 
             }
         });
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                mBluetoothLeService.setCharacteristicNotification(characteristic, true);
+                mSubscribe=true;
+                if(!subscribeBLE()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(R.string.error)
+                            .setMessage(R.string.connectFail)
+                            .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                }
             }
         },1600);
 
+    }
 
+    private boolean subscribeBLE(){
+        BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+        if(characteristic==null){
+            //errorCode=1,wrong device
+            mBatteryDisplayFragment.updateUI(1,"");
+            return false;
+        }
+        else {
+            if(mSubscribe){
+                mToast.setText(R.string.subscribe);
+                mToast.show();
 
+            }
+            else{
+                mToast.setText(R.string.unSubscribe);
+                mToast.show();
+            }
+            mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
+            mSubscribe=!mSubscribe;
+            return true;
+        }
     }
 
     @Override
@@ -229,7 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 if(mBluetoothLeService==null) {
                     Log.d(TAG, "mBluetoothLeService is null ");
                 }
-                mBluetoothLeService.connect(mDeviceAddress);
+                if(!mBluetoothLeService.connect(mDeviceAddress)){
+                    mToast.setText(R.string.connectFailToast);
+                    mToast.show();
+                }
                 return true;
             case R.id.menu_disconnect:
                 mBluetoothLeService.disconnect();

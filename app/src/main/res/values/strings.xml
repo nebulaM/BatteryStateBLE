@@ -30,4 +30,15 @@
     <string name="health">Health</string>
     <string name="no_connection">No Connection</string>
     <string name="wrong_device">Wrong Device</string>
+
+    <string name="subscribe">Auto Update Battery Status</string>
+    <string name="unSubscribe">Cancel Auto Update</string>
+
+    <string name="TTE">min left</string>
+    <string name="TTE_Default">-- min left</string>
+
+    <string name="dismiss">Dismiss</string>
+    <string name="error">Error</string>
+    <string name="connectFail">Cannot connect to the server. Please re-connect by clicking the [connect] button. If it does not work for many times, please turn off and then turn on bluetooth on your phone.</string>
+    <string name="connectFailToast">Connection failed. Please retry.</string>
 </resources>

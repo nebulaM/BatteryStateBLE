@@ -29,6 +29,8 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
@@ -36,7 +38,16 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import java.io.IOException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +83,15 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_Battery_Level_Percent =UUID.fromString(SampleGattAttributes.Battery_Level_Percent);
 
+    private long mLastTimeNotify;
+    private long mLastTimeSendToCloud;
 
+    private final long NOTIFY_INTERVAL=300000;
+
+    private final long SEND_TO_CLOUD_PERIOD=30000;
+    private boolean firstTime2Cloud;
+    private BatteryObject mBatteryData2AWS;
+    private DynamoDBMapper mapperAWSDB;
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -127,11 +146,19 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
-    private long mLastTimeNotify=0;
-    private long mLastTimeSendToCloud=0;
-    //TODO:currently use 5sec for testing purpose, should be much longer(~5 min)
-    private final long NOTIFY_INTERVAL=300000;
-    private final long SEND_TO_CLOUD_PERIOD=3000;
+    @Override
+    public void onCreate(){
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                //TODO:Add Pool ID
+                "", // Identity Pool ID
+                Regions.US_WEST_2 // Region
+        );
+        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
+        mapperAWSDB = new DynamoDBMapper(ddbClient);
+
+    }
 
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
@@ -139,19 +166,25 @@ public class BluetoothLeService extends Service {
         if(UUID_Battery_Level_Percent.equals(characteristic.getUuid())){
             //Log.d(TAG, "battery data format UINT8.");
             byte[] dataSet=characteristic.getValue();
-            Log.d(TAG, String.format("Received battery percent: %d", dataSet[0]));
-            //Log.d(TAG, String.format("Received battery health: %d", dataSet[1]));
-            //length is data set plus error code
-            StringBuilder sb=new StringBuilder(1+dataSet.length);
-            //errorCode is 0
-            sb.append('0');
-            for(byte c : dataSet){
-                sb.append(',');
-                sb.append(c);
+            //error from BLE server
+            if(dataSet[0]==2){
+                return;
             }
+            Log.d(TAG, "Received battery percent: "+dataSet[7]);
+            Log.d(TAG, "Received battery health: "+dataSet[8]);
+            Log.d(TAG, "Received TTE: "+dataSet[9]);
+            //length is data set plus error code
+            StringBuilder sb=new StringBuilder();
+
+            //1-6 unique ID not append to this sb, 7 level, 8 health, 9-10 TTE
+            for(int i=7;i<dataSet.length;i++){
+                sb.append(dataSet[i]);
+                sb.append(',');
+            }
+            sb.setLength(sb.length()-1);
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
-            if(dataSet[0]<20){
+            if(dataSet[7]<20){
                 if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
                     Log.d(TAG,"show Notification!");
 
@@ -164,9 +197,9 @@ public class BluetoothLeService extends Service {
                     });
                     t.start();
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                                    .setSmallIcon(R.drawable.ic_low_battery)
-                                    .setContentTitle(getText(R.string.notify_low_bat_title))
-                                    .setContentText(getText(R.string.notify_low_bat_text));
+                            .setSmallIcon(R.drawable.ic_low_battery)
+                            .setContentTitle(getText(R.string.notify_low_bat_title))
+                            .setContentText(getText(R.string.notify_low_bat_text));
                     NotificationManager mNotifyMgr =
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     mNotifyMgr.notify(1, mBuilder.build());
@@ -178,18 +211,28 @@ public class BluetoothLeService extends Service {
                 }
             }
 
-            if(System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD) {
-                final byte level=dataSet[0];
-                final byte health=dataSet[1];
+            //send to cloud server
+            if(isNetworkAvailable() &&
+                    ((firstTime2Cloud&&System.currentTimeMillis()-mLastTimeSendToCloud>10000)
+                            || (System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD))) {
+                StringBuilder sbSerialNumber=new StringBuilder(6);
+                for(int i=1;i<=6;i++){
+                    sbSerialNumber.append(dataSet[i]);
+                }
+                final String serialNumber=sbSerialNumber.toString();
+                final String charge=Integer.toString((int)dataSet[7]);
+                final String health=Integer.toString((int)dataSet[8]);
                 Thread t=new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sendToCloud(level,health);
+                        sendToCloud(serialNumber,charge,health);
                     }
                 });
                 t.start();
                 mLastTimeSendToCloud=System.currentTimeMillis();
+                firstTime2Cloud=false;
             }
+
             intent.putExtra(EXTRA_DATA_SET, sb.toString());
 
         }
@@ -205,18 +248,28 @@ public class BluetoothLeService extends Service {
         }
         sendBroadcast(intent);
     }
-
-
-    private void sendToCloud(byte level, byte health){
+    protected static Calendar c = Calendar.getInstance();
+    protected static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private void sendToCloud(String serialNumber, String charge, String health){
+        if (mBatteryData2AWS == null) {
+            mBatteryData2AWS = new BatteryObject();
+        }
         try {
-            //TODO:public IP
-            NetworkClient mNetworkClient=new NetworkClient("192.168.1.67",6111);
-            Log.d(TAG,"try send data by network");
-            mNetworkClient.sendRequest("ID:TBD;TIME:TBD;LEVEL:"+level+";HEALTH:"+health);
-            mNetworkClient.close();
-        }catch (IOException e) {
+            mBatteryData2AWS.setSerialNum(serialNumber);
+            mBatteryData2AWS.setCharge(charge);
+            mBatteryData2AWS.setHealth(health);
+            mBatteryData2AWS.setUpdate(df.format(c.getTime()));
+            mapperAWSDB.save(mBatteryData2AWS);
+        } catch (AmazonServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public class LocalBinder extends Binder {
@@ -263,6 +316,11 @@ public class BluetoothLeService extends Service {
             return false;
         }
 
+        //give some time to wait for battery data gets stable
+        mLastTimeNotify=System.currentTimeMillis();
+        mLastTimeSendToCloud=System.currentTimeMillis();
+        firstTime2Cloud=true;
+
         return true;
     }
 
@@ -288,6 +346,12 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 mConnectionState = STATE_CONNECTING;
+
+                //give some time to wait for battery data gets stable
+                mLastTimeNotify=System.currentTimeMillis();
+                mLastTimeSendToCloud=System.currentTimeMillis();
+                firstTime2Cloud=true;
+
                 return true;
             } else {
                 return false;
