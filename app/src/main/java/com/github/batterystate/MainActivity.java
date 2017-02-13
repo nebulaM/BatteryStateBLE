@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-    private final boolean SHOW_IP =true;
-
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
     // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
-                //mBatteryDisplayFragment.updateUI(3,0,0);
+                //mBatteryDisplayFragment.updateUI(3,"");
                 //auto subscribe BLE channel
                 mSubscribe=true;
                 try{TimeUnit.SECONDS.sleep(1);}catch (InterruptedException e){e.printStackTrace();}
@@ -82,37 +79,12 @@ public class MainActivity extends AppCompatActivity {
                 mConnected = false;
                 invalidateOptionsMenu();
                 //errorCode=2, not connected
-                mBatteryDisplayFragment.updateUI(2,0,0);
+                mBatteryDisplayFragment.updateUI(2,"");
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //errorCode=0
                 String dataIn=intent.getStringExtra(BluetoothLeService.EXTRA_DATA_SET);
-                String[] dataSet = dataIn.split(",");
-                int errorCode=Integer.parseInt(dataSet[0]);
-                int batteryLevel=Integer.parseInt(dataSet[1]);
-                if(batteryLevel<0){
-                    batteryLevel+=256;
-                }
-                int batteryHealth=Integer.parseInt(dataSet[2]);
-                if(batteryHealth<0){
-                    batteryHealth+=256;
-                }
-                if(SHOW_IP && !mToast.getView().isShown()) {
-                    if(dataSet.length>=6) {
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 0; i < 4; ++i) {
-                            int data = Integer.parseInt(dataSet[3 + i]);
-                            if (data < 0) {
-                                data = 256 + data;
-                            }
-                            sb.append(data);
-                            sb.append('.');
-                        }
-                        sb.setLength(sb.length()-1);
-                        mToast.setText(sb.toString());
-                        mToast.show();
-                    }
-                }
-                mBatteryDisplayFragment.updateUI(errorCode,batteryLevel,batteryHealth);
+
+                mBatteryDisplayFragment.updateUI(0,dataIn);
 
             }
         }
@@ -152,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
                 if(characteristic==null){
                     //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI(1,0,0);
+                    mBatteryDisplayFragment.updateUI(1,"");
                 }
                 else {
                     mBluetoothLeService.readCharacteristic(characteristic);
@@ -183,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
         if(characteristic==null){
             //errorCode=1,wrong device
-            mBatteryDisplayFragment.updateUI(1,0,0);
+            mBatteryDisplayFragment.updateUI(1,"");
         }
         else {
             if(mSubscribe){

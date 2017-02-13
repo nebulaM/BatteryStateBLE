@@ -22,7 +22,7 @@
                     custom:clockwise="true"
                     custom:donut_color="@color/green"
                     custom:donut_color_fade="@color/green_fade"
-                    custom:radius="80dp" />
+                    custom:radius="90dp" />
                 <TextView android:id="@+id/textViewBatLevelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -37,11 +37,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="85dp"
                     android:textColor="@color/green"
                     android:textSize="56sp"
                     android:fontFamily="sans-serif-thin"
                     android:text="@string/battery_level" />
+                <TextView android:id="@+id/textViewTTE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:textColor="@color/green"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="@string/TTE_Default" />
         </FrameLayout>
         <FrameLayout
             android:layout_weight="1"
@@ -57,12 +66,12 @@
                     custom:clockwise="true"
                     custom:donut_color="@color/orange"
                     custom:donut_color_fade="@color/orange_fade"
-                    custom:radius="80dp" />
+                    custom:radius="90dp" />
                 <TextView android:id="@+id/textViewBatHealthTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:textColor="@color/orange"
                     android:textSize="24sp"
                     android:fontFamily="sans-serif-thin"
@@ -71,7 +80,7 @@
                 <TextView android:id="@+id/textViewBatHealthPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="85dp"
                     android:layout_gravity="center_horizontal"
                     android:textColor="@color/orange"
                     android:textSize="56sp"

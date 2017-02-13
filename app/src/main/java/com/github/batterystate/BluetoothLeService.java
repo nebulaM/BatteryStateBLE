@@ -172,15 +172,16 @@ public class BluetoothLeService extends Service {
             }
             Log.d(TAG, "Received battery percent: "+dataSet[7]);
             Log.d(TAG, "Received battery health: "+dataSet[8]);
+            Log.d(TAG, "Received TTE: "+dataSet[9]);
             //length is data set plus error code
             StringBuilder sb=new StringBuilder();
-            //errorCode is 0
-            sb.append('0');
-            //1-6 unique ID not append to this sb, 7 level, 8 health
+
+            //1-6 unique ID not append to this sb, 7 level, 8 health, 9-10 TTE
             for(int i=7;i<dataSet.length;i++){
-                sb.append(',');
                 sb.append(dataSet[i]);
+                sb.append(',');
             }
+            sb.setLength(sb.length()-1);
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
             if(dataSet[7]<20){

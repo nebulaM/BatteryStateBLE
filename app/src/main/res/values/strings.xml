@@ -33,4 +33,7 @@
 
     <string name="subscribe">Auto Update Battery Status</string>
     <string name="unSubscribe">Cancel Auto Update</string>
+
+    <string name="TTE">min left</string>
+    <string name="TTE_Default">-- min left</string>
 </resources>
