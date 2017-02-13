@@ -114,18 +114,21 @@ public class BatteryStatusDisplay extends Fragment {
                 mHealth.setData(0);
                 mTextCharge.setText(getText(R.string.wrong_device));
                 mTextHealth.setText("");
+                mTextTTE.setText(R.string.TTE_Default);
                 break;
             case 2:
                 mCharge.setData(0);
                 mHealth.setData(0);
                 mTextCharge.setText(getText(R.string.no_connection));
                 mTextHealth.setText("");
+                mTextTTE.setText(R.string.TTE_Default);
                 break;
             case 3:
                 mCharge.setData(0);
                 mHealth.setData(0);
                 mTextCharge.setText(getText(R.string.connected));
                 mTextHealth.setText("");
+                mTextTTE.setText(R.string.TTE_Default);
                 break;
             default:
                 break;
