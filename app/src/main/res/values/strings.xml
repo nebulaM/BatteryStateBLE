@@ -36,4 +36,8 @@
 
     <string name="TTE">min left</string>
     <string name="TTE_Default">-- min left</string>
+
+    <string name="dismiss">Dismiss</string>
+    <string name="error">Error</string>
+    <string name="connectFail">Cannot connect to the server. Please re-connect by clicking the [connect] button. If it does not work for many times, please turn off and then turn on bluetooth on your phone.</string>
 </resources>

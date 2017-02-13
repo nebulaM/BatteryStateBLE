@@ -1,10 +1,12 @@
 
 package com.github.batterystate;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -140,22 +142,33 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mSubscribe=true;
-                subscribeBLE();
+                if(!subscribeBLE()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(R.string.error)
+                            .setMessage(R.string.connectFail)
+                            .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                }
             }
         },1600);
 
     }
 
-    private void subscribeBLE(){
+    private boolean subscribeBLE(){
         BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
         if(characteristic==null){
             //errorCode=1,wrong device
             mBatteryDisplayFragment.updateUI(1,"");
+            return false;
         }
         else {
             if(mSubscribe){
@@ -169,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             }
             mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
             mSubscribe=!mSubscribe;
+            return true;
         }
     }
 
