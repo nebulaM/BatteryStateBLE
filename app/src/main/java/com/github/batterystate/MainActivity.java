@@ -236,7 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 if(mBluetoothLeService==null) {
                     Log.d(TAG, "mBluetoothLeService is null ");
                 }
-                mBluetoothLeService.connect(mDeviceAddress);
+                if(!mBluetoothLeService.connect(mDeviceAddress)){
+                    mToast.setText(R.string.connectFailToast);
+                    mToast.show();
+                }
                 return true;
             case R.id.menu_disconnect:
                 mBluetoothLeService.disconnect();
