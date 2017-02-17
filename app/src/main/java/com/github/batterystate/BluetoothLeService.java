@@ -86,9 +86,9 @@ public class BluetoothLeService extends Service {
     private long mLastTimeNotify;
     private long mLastTimeSendToCloud;
 
-    private final long NOTIFY_INTERVAL=300000;
+    private final long NOTIFY_INTERVAL=30002;
 
-    private final long SEND_TO_CLOUD_PERIOD=30000;
+    private final long SEND_TO_CLOUD_PERIOD=600000;
     private boolean firstTime2Cloud;
     private BatteryObject mBatteryData2AWS;
     private DynamoDBMapper mapperAWSDB;
@@ -184,7 +184,7 @@ public class BluetoothLeService extends Service {
             sb.setLength(sb.length()-1);
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
-            if(dataSet[7]<20){
+            if(dataSet[7]<=80){
                 if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
                     Log.d(TAG,"show Notification!");
 

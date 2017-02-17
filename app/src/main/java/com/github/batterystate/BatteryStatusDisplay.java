@@ -38,7 +38,7 @@ public class BatteryStatusDisplay extends Fragment {
         mCharge = (DonutView) view.findViewById(R.id.ViewBatteryLevel);
         mHealth = (DonutView) view.findViewById(R.id.ViewBatteryHealth);
 
-        mHealth.setOnClickListener(new View.OnClickListener(){
+        /*mHealth.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 if(!mToast.getView().isShown() && mIP !=null) {
@@ -46,7 +46,7 @@ public class BatteryStatusDisplay extends Fragment {
                         mToast.show();
                 }
             }
-        });
+        });*/
 
         mTextCharge = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
         mTextHealth =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
@@ -84,7 +84,7 @@ public class BatteryStatusDisplay extends Fragment {
                 }
 
                 int TTE=((int) ((Long.parseLong(dataSet[2])<<8)&0xFF00))+(int) Long.parseLong(dataSet[3]);
-                if(dataSet.length>=7) {
+                /*if(dataSet.length>=7) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < 4; ++i) {
                         int data = Integer.parseInt(dataSet[4 + i]);
@@ -96,7 +96,7 @@ public class BatteryStatusDisplay extends Fragment {
                     }
                     sb.setLength(sb.length() - 1);
                     mIP =sb.toString();
-                }
+                }*/
                 Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE is "+TTE);
 
                 mCharge.setData(batteryLevel);

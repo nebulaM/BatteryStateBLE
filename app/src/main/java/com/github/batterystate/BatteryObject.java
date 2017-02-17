@@ -22,7 +22,7 @@ import java.util.Calendar;
 
     public BatteryObject(){
         //TODO:find a way to determine battery type
-        setBatteryType("TEST");
+        setBatteryType("Li-on");
     }
 
     @DynamoDBHashKey(attributeName = "serial-num")
