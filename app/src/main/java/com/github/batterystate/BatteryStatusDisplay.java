@@ -8,12 +8,17 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
+    interface buttonListener{
+        void onClick(String action);
+    }
+    private buttonListener mButtonListener;
     private TextView mTextCharge;
     private TextView mTextChargeTitle;
     private TextView mTextHealth;
@@ -55,7 +60,21 @@ public class BatteryStatusDisplay extends Fragment {
 
         mTextChargeTitle = (TextView) view.findViewById(R.id.textViewBatLevelTitle);
 
+        ImageButton readBLE = (ImageButton) view.findViewById(R.id.readBLE);
+        readBLE.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mButtonListener.onClick("readBLE");
+            }
+        });
 
+        ImageButton subscribeBLEBtn = (ImageButton) view.findViewById(R.id.setNotification);
+        subscribeBLEBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mButtonListener.onClick("subBLE");
+            }
+        });
 
         return view;
     }
@@ -143,6 +162,10 @@ public class BatteryStatusDisplay extends Fragment {
             default:
                 break;
         }
+    }
+
+    public void setButtonListener(BatteryStatusDisplay.buttonListener onClickListener){
+        mButtonListener=onClickListener;
     }
 
     protected static String bound(String in){

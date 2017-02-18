@@ -7,25 +7,6 @@
     tools:context="com.github.batterystate.MainActivity"
     android:background="@android:color/white">
 
-    <ImageButton
-        android:id="@+id/readBLE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="460dp"
-        android:layout_marginLeft="50dp"
-        android:src="@drawable/refresh_button"
-        android:background="@null"/>
-    <ImageButton
-        android:id="@+id/setNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="460dp"
-        android:layout_marginLeft="250dp"
-        android:src="@drawable/subscribe_button"
-        android:background="@null"/>
+
 
 </FrameLayout>

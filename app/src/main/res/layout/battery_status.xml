@@ -90,12 +90,30 @@
 
         <FrameLayout
             android:layout_weight="0.5"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:paddingTop="@dimen/padding"
             android:paddingBottom="@dimen/padding"
+            android:paddingLeft="@dimen/padding"
+            android:paddingRight="@dimen/padding"
             >
-
+            <ImageButton
+                android:id="@+id/readBLE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding"
+                android:layout_gravity="start"
+                android:src="@drawable/refresh_button"
+                android:background="@null"/>
+            <ImageButton
+                android:id="@+id/setNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding"
+                android:layout_gravity="end"
+                android:src="@drawable/subscribe_button"
+                android:background="@null"/>
         </FrameLayout>
+
 </LinearLayout>

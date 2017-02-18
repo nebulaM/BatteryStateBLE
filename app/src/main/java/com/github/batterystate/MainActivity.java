@@ -24,7 +24,7 @@ import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private final static String TAG = MainActivity.class.getSimpleName();
     //hardcode to our bluetooth server for now
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -117,31 +117,24 @@ public class MainActivity extends AppCompatActivity {
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         mBatteryDisplayFragment = new BatteryStatusDisplay();
+        mBatteryDisplayFragment.setButtonListener(new BatteryStatusDisplay.buttonListener() {
+            @Override
+            public void onClick(String action) {
+                if(action.equals("readBLE")){
+                    BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
+                    if(characteristic==null){
+                        //errorCode=1,wrong device
+                        mBatteryDisplayFragment.updateUI(1,"");
+                    }
+                    else {
+                        mBluetoothLeService.readCharacteristic(characteristic);
+                    }
+                }else if(action.equals("subBLE")){
+                    subscribeBLE();
+                }
+            }
+        });
         getFragmentManager().beginTransaction().add(R.id.frag_container, mBatteryDisplayFragment).commit();
-
-        ImageButton readBLE = (ImageButton) findViewById(R.id.readBLE);
-        readBLE.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
-                if(characteristic==null){
-                    //errorCode=1,wrong device
-                    mBatteryDisplayFragment.updateUI(1,"");
-                }
-                else {
-                    mBluetoothLeService.readCharacteristic(characteristic);
-                }
-            }
-        });
-
-        final ImageButton subscribeBLEBtn = (ImageButton) findViewById(R.id.setNotification);
-        subscribeBLEBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subscribeBLE();
-
-            }
-        });
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -162,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         },1600);
 
     }
+
 
     private boolean subscribeBLE(){
         BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);
