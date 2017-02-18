@@ -69,8 +69,6 @@ public class BatteryStatusDisplay extends Fragment {
             mTextChargeTitle.setText("");
         }
 
-
-
         switch (errorCode){
             case 0:
                 String[] dataSet = in.split(",");
@@ -82,8 +80,24 @@ public class BatteryStatusDisplay extends Fragment {
                 if(batteryHealth<0){
                     batteryHealth+=256;
                 }
-
-                int TTE=((int) ((Long.parseLong(dataSet[2])<<8)&0xFF00))+(int) Long.parseLong(dataSet[3]);
+                int current=((int) ((Long.parseLong(dataSet[4])<<8)&0xFF00))+(int) Long.parseLong(dataSet[5]);
+                int TTEorF = ((int) ((Long.parseLong(dataSet[2]) << 8) & 0xFF00)) + (int) Long.parseLong(dataSet[3]);
+                if((current>>15)==1){
+                    current=current-65535;
+                }
+                if(current<=0) {
+                    if(TTEorF>60) {
+                        mTextTTE.setText(String.valueOf(TTEorF/60) + " hr left");
+                    }else{
+                        mTextTTE.setText(String.valueOf(TTEorF) + " min left");
+                    }
+                }else{
+                    if(TTEorF>60) {
+                        mTextTTE.setText(String.valueOf(TTEorF/60) + " hr to full");
+                    }else{
+                        mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
+                    }
+                }
                 /*if(dataSet.length>=7) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < 4; ++i) {
@@ -97,17 +111,13 @@ public class BatteryStatusDisplay extends Fragment {
                     sb.setLength(sb.length() - 1);
                     mIP =sb.toString();
                 }*/
-                Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE is "+TTE);
+                Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE/F is "+TTEorF +" current is " +current);
 
                 mCharge.setData(batteryLevel);
                 mHealth.setData(batteryHealth);
                 mTextCharge.setText(bound(Integer.toString(batteryLevel)));
                 mTextHealth.setText(bound(Integer.toString(batteryHealth)));
-                if(TTE>60) {
-                    mTextTTE.setText(String.valueOf(TTE/60) + " hr left");
-                }else{
-                    mTextTTE.setText(String.valueOf(TTE) + " min left");
-                }
+
                 break;
             case 1:
                 mCharge.setData(0);

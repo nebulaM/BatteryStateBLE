@@ -167,16 +167,18 @@ public class BluetoothLeService extends Service {
             //Log.d(TAG, "battery data format UINT8.");
             byte[] dataSet=characteristic.getValue();
             //error from BLE server
-            if(dataSet[0]==2){
+
+            if(dataSet[0]>0){
                 return;
             }
             Log.d(TAG, "Received battery percent: "+dataSet[7]);
             Log.d(TAG, "Received battery health: "+dataSet[8]);
-            Log.d(TAG, "Received TTE: "+dataSet[9]);
+            Log.d(TAG, "Received TTE/TTF: "+dataSet[9]);
+
             //length is data set plus error code
             StringBuilder sb=new StringBuilder();
 
-            //1-6 unique ID not append to this sb, 7 level, 8 health, 9-10 TTE
+            //1-6 unique ID not append to this sb, 7 level, 8 health, 9-10 TTE/TTF 11-12 current 13-14 volt
             for(int i=7;i<dataSet.length;i++){
                 sb.append(dataSet[i]);
                 sb.append(',');
