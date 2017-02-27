@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity{
 
     protected Toast mToast;
 
+    protected static ThemeDialog mThemeDialog;
+    private SharedPreferences mSP;
+    public static final String SP_FILE_NAME ="BSSP";
+    public static final String SP_KEY_THEME="SP_KEY_THEME";
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -134,6 +139,23 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
+
+        final View container=this.findViewById(R.id.frag_container);
+        mSP=getSharedPreferences(MainActivity. SP_FILE_NAME, MODE_PRIVATE);
+        setTheme(mSP.getInt(SP_KEY_THEME,0), container);
+
+
+
+        mThemeDialog=new ThemeDialog();
+        mThemeDialog.setOnCloseListener(new ThemeDialog.onCloseListener(){
+            @Override
+            public void onDialogClose(String tag, int parameter){
+                mSP.edit().putInt(SP_KEY_THEME,parameter).apply();
+                setTheme(parameter,container);
+            }
+        });
+
+
         getFragmentManager().beginTransaction().add(R.id.frag_container, mBatteryDisplayFragment).commit();
 
         final Handler handler = new Handler();
@@ -156,6 +178,24 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    private void setTheme(int themeID, View v){
+        switch (themeID){
+            case 0:
+                v.setBackgroundResource(R.color.theme_0);
+                break;
+            case 1:
+                v.setBackgroundResource(R.color.theme_1);
+                break;
+            case 2:
+                v.setBackgroundResource(R.color.theme_2);
+                break;
+            case 3:
+                v.setBackgroundResource(R.color.theme_3);
+                break;
+            default:
+                break;
+        }
+    }
 
     private boolean subscribeBLE(){
         BluetoothGattCharacteristic characteristic=mBluetoothLeService.getGattCharacteristic(mBluetoothLeService.UUID_Battery_Service,mBluetoothLeService.UUID_Battery_Level_Percent);

@@ -1,0 +1,32 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape
+            android:shape="oval">
+            <solid
+                android:color="@color/theme_0_dark"/>
+            <size
+                android:width="@dimen/theme_dialog_circle"
+                android:height="@dimen/theme_dialog_circle"/>
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape
+            android:shape="oval">
+            <solid
+                android:color="@color/theme_0_trans"/>
+            <size
+                android:width="@dimen/theme_dialog_circle"
+                android:height="@dimen/theme_dialog_circle"/>
+        </shape>
+    </item>
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="oval">
+            <solid
+                android:color="@color/theme_0"/>
+            <size
+                android:width="@dimen/theme_dialog_circle"
+                android:height="@dimen/theme_dialog_circle"/>
+        </shape>
+    </item>
+</selector>

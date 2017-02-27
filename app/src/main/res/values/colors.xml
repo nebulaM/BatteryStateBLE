@@ -13,4 +13,23 @@
     <color name="orange">#f7a420</color>
     <color name="orange_fade">#fde6c5</color>
     <color name="red">#ff0000</color>
+
+
+    <color name="theme_0">#ffffff</color>
+    <color name="theme_0_dark">#494949</color>
+    <color name="theme_0_trans">#f2f2f2</color>
+
+    <color name="theme_1">#ffffb4</color>
+    <color name="theme_1_dark">#000000</color>
+    <color name="theme_1_trans">#7d7d7d</color>
+
+
+    <color name="theme_2">#fcc7ce</color>
+    <color name="theme_2_dark">#681515</color>
+    <color name="theme_2_trans">#e58282</color>
+
+
+    <color name="theme_3">#9becf0</color>
+    <color name="theme_3_dark">#0c3b6c</color>
+    <color name="theme_3_trans">#B41A78C3</color>
 </resources>

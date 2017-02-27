@@ -76,6 +76,14 @@ public class BatteryStatusDisplay extends Fragment {
             }
         });
 
+        ImageButton themeButton= (ImageButton) view.findViewById(R.id.setTheme);
+        themeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.mThemeDialog.show(getFragmentManager(), "dialog");
+            }
+        });
+
         return view;
     }
 
