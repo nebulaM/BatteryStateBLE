@@ -86,7 +86,7 @@ public class BluetoothLeService extends Service {
     private long mLastTimeNotify;
     private long mLastTimeSendToCloud;
 
-    private final long NOTIFY_INTERVAL=30002;
+    private final long NOTIFY_INTERVAL=3000002;
 
     private final long SEND_TO_CLOUD_PERIOD=600000;
     private boolean firstTime2Cloud;
@@ -424,11 +424,11 @@ public class BluetoothLeService extends Service {
      * @param characteristic Characteristic to act on.
      * @param enabled If true, enable notification.  False otherwise.
      */
-    public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
+    public boolean setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
-            return;
+            return false;
         }
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
@@ -444,19 +444,24 @@ public class BluetoothLeService extends Service {
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 if (mBluetoothGatt.writeDescriptor(descriptor)) {
                     Log.d(TAG, "subscribed battery service");
+                    return true;
                 } else {
                     Log.e(TAG, "cannot subscribed battery service");
+                    return false;
                 }
             }
             else{
                 descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
                 if (mBluetoothGatt.writeDescriptor(descriptor)) {
                     Log.d(TAG, "Un subscribed battery service");
+                    return true;
                 } else {
                     Log.e(TAG, "cannot un subscribed battery service");
+                    return false;
                 }
             }
         }
+        return false;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.github.batterystate;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class BatteryStatusDisplay extends Fragment {
         mCharge = (DonutView) view.findViewById(R.id.ViewBatteryLevel);
         mHealth = (DonutView) view.findViewById(R.id.ViewBatteryHealth);
 
-        /*mHealth.setOnClickListener(new View.OnClickListener(){
+        mHealth.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 if(!mToast.getView().isShown() && mIP !=null) {
@@ -51,7 +52,7 @@ public class BatteryStatusDisplay extends Fragment {
                         mToast.show();
                 }
             }
-        });*/
+        });
 
         mTextCharge = (TextView) view.findViewById(R.id.textViewBatLevelPercent);
         mTextHealth =(TextView) view.findViewById(R.id.textViewBatHealthPercent);
@@ -88,6 +89,10 @@ public class BatteryStatusDisplay extends Fragment {
     }
 
     protected void updateUI(int errorCode, String in){
+        if(in==null || in.equals("")){
+            return;
+        }
+        System.out.println("String in : "+in);
         if(errorCode==0){
             mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
             mTextChargeTitle.setText(getText(R.string.charge));
@@ -125,10 +130,10 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
                     }
                 }
-                /*if(dataSet.length>=7) {
+                if(dataSet.length==12) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < 4; ++i) {
-                        int data = Integer.parseInt(dataSet[4 + i]);
+                        int data = Integer.parseInt(dataSet[8 + i]);
                         if (data < 0) {
                             data = 256 + data;
                         }
@@ -137,7 +142,8 @@ public class BatteryStatusDisplay extends Fragment {
                     }
                     sb.setLength(sb.length() - 1);
                     mIP =sb.toString();
-                }*/
+                    System.out.println("mIP: "+mIP);
+                }
                 Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE/F is "+TTEorF +" current is " +current);
 
                 mCharge.setData(batteryLevel);

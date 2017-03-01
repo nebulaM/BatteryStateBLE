@@ -205,18 +205,29 @@ public class MainActivity extends AppCompatActivity{
             return false;
         }
         else {
-            if(mSubscribe){
-                mToast.setText(R.string.subscribe);
-                mToast.show();
+            if(mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe)) {
+                if (mSubscribe) {
+                    mToast.setText(R.string.subscribe);
+                    mToast.show();
 
-            }
-            else{
-                mToast.setText(R.string.unSubscribe);
+                } else {
+                    mToast.setText(R.string.unSubscribe);
+                    mToast.show();
+                }
+                mSubscribe=!mSubscribe;
+                return true;
+            }else {
+                if (mSubscribe) {
+                    mToast.setText("Cannot subscribe, try again");
+                    mToast.show();
+
+                } else {
+                    mToast.setText("Cannot un-subscribe, try again");
+                    mToast.show();
+                }
                 mToast.show();
+                return false;
             }
-            mBluetoothLeService.setCharacteristicNotification(characteristic, mSubscribe);
-            mSubscribe=!mSubscribe;
-            return true;
         }
     }
 
