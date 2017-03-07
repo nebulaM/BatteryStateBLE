@@ -27,6 +27,9 @@
     <string name="notify_low_bat_text">WheelChair battery level is low!</string>
 
     <string name="charge">Charge</string>
+    <string name="current">Current</string>
+    <string name="voltage">Voltage</string>
+
     <string name="health">Health</string>
     <string name="no_connection">No Connection</string>
     <string name="wrong_device">Wrong Device</string>

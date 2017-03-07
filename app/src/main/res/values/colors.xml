@@ -8,11 +8,14 @@
 
 
     <color name="font_color">#f8f8ff</color>
+
     <color name="green">#30a41d</color>
     <color name="green_fade">#99ea8c</color>
     <color name="orange">#f7a420</color>
     <color name="orange_fade">#fde6c5</color>
-    <color name="red">#ff0000</color>
+    <color name="red">#f50c0d</color>
+    <color name="red_fade">#fdc0c1</color>
+
 
 
     <color name="theme_0">#ffffff</color>

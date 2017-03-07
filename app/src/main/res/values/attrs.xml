@@ -2,7 +2,11 @@
     <declare-styleable name="DonutView">
         <attr name="clockwise" format="boolean"/>
         <attr name="radius" format="dimension"/>
-        <attr name="donut_color" format="integer"/>
-        <attr name="donut_color_fade" format="integer"/>
+        <attr name="donut_color_full" format="integer"/>
+        <attr name="donut_color_full_fade" format="integer"/>
+        <attr name="donut_color_middle" format="integer"/>
+        <attr name="donut_color_middle_fade" format="integer"/>
+        <attr name="donut_color_empty" format="integer"/>
+        <attr name="donut_color_empty_fade" format="integer"/>
     </declare-styleable>
 </resources>

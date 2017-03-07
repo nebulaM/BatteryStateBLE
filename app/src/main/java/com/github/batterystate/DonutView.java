@@ -13,6 +13,7 @@ import android.view.View;
 
 
 public class DonutView extends View {
+    private final String TAG="DonutView";
     //in which direction battery level decreases
     private boolean mClockwise;
     //radius of the donut
@@ -28,12 +29,19 @@ public class DonutView extends View {
     RectF innerCircle;
     RectF shadowRectF;
 
-    private int mColor;
-    private int mLightColor;
+    private final int mColorFull;
+    private final int mBGColorFull;
 
-    private float[] smallCircleCord=new float[2];
+    private final int mColorMiddle;
+    private final int mBGColorMiddle;
+
+    private final int mColorEmpty;
+    private final int mBGColorEmpty;
+
     private float smallCircleOffset;
 
+    private double[][] frontColor;
+    private double[][] backColor;
 
     /**
      * @param context
@@ -66,8 +74,13 @@ public class DonutView extends View {
             // each custom attribute in the R.styleable.ViewBatteryLevel array.
             mClockwise = a.getBoolean(R.styleable.DonutView_clockwise,true);
             mRadius=a.getDimension(R.styleable.DonutView_radius,20.0f);
-            mColor=a.getInteger(R.styleable.DonutView_donut_color,0x000000);
-            mLightColor=a.getInteger(R.styleable.DonutView_donut_color_fade,0xffffff);
+            mColorFull =a.getInteger(R.styleable.DonutView_donut_color_full,0x000000);
+            mBGColorFull =a.getInteger(R.styleable.DonutView_donut_color_full_fade,0xffffff);
+            mColorMiddle =a.getInteger(R.styleable.DonutView_donut_color_middle,0x000000);
+            mBGColorMiddle =a.getInteger(R.styleable.DonutView_donut_color_middle_fade,0xffffff);
+            mColorEmpty =a.getInteger(R.styleable.DonutView_donut_color_empty,0x000000);
+            mBGColorEmpty =a.getInteger(R.styleable.DonutView_donut_color_empty_fade,0xffffff);
+
         } finally {
             // release the TypedArray so that it can be reused.
             a.recycle();
@@ -84,7 +97,7 @@ public class DonutView extends View {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setAntiAlias(true);
         mPaint.setStrokeWidth(mRadius / 14.0f);
-        mPaint.setColor(mColor);
+        mPaint.setColor(mColorFull);
 
         mPath = new Path();
         outerCircle = new RectF();
@@ -99,10 +112,27 @@ public class DonutView extends View {
         float startCordIn = inner * mRadius;
         innerCircle.set(startCordIn, startCordIn, mDiameter-startCordIn, mDiameter-startCordIn);
         smallCircleOffset=((inner+outer)/2)*mRadius;
+
+        frontColor =new double[3][3];
+        parseColor(frontColor,0,mColorEmpty);
+        parseColor(frontColor,1,mColorMiddle);
+        parseColor(frontColor,2,mColorFull);
+        backColor =new double[3][3];
+        parseColor(backColor,0,mBGColorEmpty);
+        parseColor(backColor,1,mBGColorMiddle);
+        parseColor(backColor,2,mBGColorFull);
     }
+
+    private void parseColor(double[][] array, int index, int color){
+        for(int i=0;i<3;i++){
+            int thisColor=(color>>((2-i)*8))&0xFF;
+            array[index][i]=thisColor;
+        }
+    }
+
     /**
      *
-     * @param dataIn
+     * @param dataIn data to display, range 0-100
      */
     public void setData(int dataIn){
         if(dataIn<0){
@@ -155,33 +185,47 @@ public class DonutView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(mColor);
+
 
         if (mClockwise) {
             if (mData == 100.0f) {
+                mPaint.setColor(mColorFull);
                 drawDonut(canvas, mPaint, mPath, 0.0f, 359.99f);
                 canvas.drawCircle( mRadius,smallCircleOffset,mRadius*0.05f,mPaint);
             } else if (mData == 0.0f) {
-                mPaint.setColor(mLightColor);
+                mPaint.setColor(mBGColorEmpty);
                 drawDonut(canvas, mPaint, mPath, 0.0f, 359.99f);
+                canvas.drawCircle( mRadius,smallCircleOffset,mRadius*0.05f,mPaint);
             } else {
-
+                int mColor=getColor(false);
+                //Log.d(TAG,"@onDraw: mColor is"+ Integer.toHexString(mColor));
+                mPaint.setColor(mColor);
                 drawDonut(canvas, mPaint, mPath, 270.0f - mData * 3.60f, mData * 3.60f);
-                mPaint.setColor(mLightColor);
+                int mBGColor=getColor(true);
+                //Log.d(TAG,"@onDraw: mBGColor is"+ Integer.toHexString(mBGColor));
+                mPaint.setColor(mBGColor);
                 drawDonut(canvas, mPaint, mPath, 270.0f, (100 - mData) * 3.60f);
                 mPaint.setColor(mColor);
                 canvas.drawCircle(mRadius  - (float) Math.sin(Math.toRadians(  mData * 3.6f)) * (mRadius - smallCircleOffset), mRadius - (float) Math.cos(Math.toRadians( mData * 3.6f))* (mRadius - smallCircleOffset), mRadius * 0.05f, mPaint);
             }
         } else {//energy decreases counterclockwise
             if (mData == 100.0f) {
+                mPaint.setColor(mColorFull);
                 drawDonut(canvas, mPaint, mPath, 0.0f, 359.9f);
+                canvas.drawCircle( mRadius,smallCircleOffset,mRadius*0.05f,mPaint);
             } else if (mData == 0.0f) {
-                mPaint.setColor(mLightColor);
+                mPaint.setColor(mBGColorEmpty);
                 drawDonut(canvas, mPaint, mPath, 0.0f, 359.99f);
+                canvas.drawCircle( mRadius,smallCircleOffset,mRadius*0.05f,mPaint);
             } else {
+                int mColor=getColor(false);
+                mPaint.setColor(mColor);
                 drawDonut(canvas, mPaint, mPath, 270.0f, mData * 3.60f);
-                mPaint.setColor(mLightColor);
+                int mBGColor=getColor(true);
+                mPaint.setColor(mBGColor);
                 drawDonut(canvas, mPaint, mPath, 270.0f + mData * 3.60f, (100.0f - mData) * 3.60f);
+                mPaint.setColor(mColor);
+                canvas.drawCircle(mRadius  - (float) Math.sin(Math.toRadians(  mData * 3.6f)) * (mRadius - smallCircleOffset), mRadius - (float) Math.cos(Math.toRadians( mData * 3.6f))* (mRadius - smallCircleOffset), mRadius * 0.05f, mPaint);
             }
         }
     }
@@ -192,5 +236,56 @@ public class DonutView extends View {
         path.arcTo(innerCircle, start+sweep, -sweep, false);
         path.close();
         canvas.drawPath(path, paint);
+    }
+
+    /**
+     *
+     * @param isBGColor background color
+     * @return a color in btw start color and end color, with respect to current data/50
+     */
+    protected int getColor(boolean isBGColor){
+        double[] start, end;
+        double[] color=new double[3];
+        double regulate;
+        if(mData<50.0f){
+            if(!isBGColor) {
+                start = frontColor[0];
+                end = frontColor[1];
+            }else {
+                start = backColor[0];
+                end = backColor[1];
+            }
+            regulate=mData;
+        }else{
+            if(!isBGColor) {
+                start = frontColor[1];
+                end = frontColor[2];
+            }else {
+                start = backColor[1];
+                end = backColor[2];
+            }
+            regulate=mData-50.0f;
+        }
+        for(int i=0;i<3;i++){
+            color[i]=start[i]+((end[i]-start[i])*regulate/50.0f);
+            if(color[i]>255.0f){
+                color[i]=255.0f;
+            }else if(color[i]<0){
+                color[i]=0;
+            }
+            //Log.d(TAG,"@onDraw: color "+i+" is "+color[i]);
+        }
+
+        //int colorReturn=((int)(Math.round(color[0]))<<16)+((int)(Math.round(color[1]))<<8)+(int)color[2];
+        //Log.d(TAG,"@onDraw: color return "+Integer.toHexString(colorReturn));
+
+        //add ff000000 for alpha
+        return 0xff000000+((int)(Math.round(color[0]))<<16)+
+                ((int)(Math.round(color[1]))<<8)+(int)color[2];
+    }
+
+
+    public int getDefaultColor(){
+        return mBGColorEmpty;
     }
 }
