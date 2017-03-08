@@ -56,7 +56,7 @@ public class BatteryStatusDisplay extends Fragment {
         mCharge.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DISPLAY=DISPLAY<1?DISPLAY+1:0;
+                DISPLAY=DISPLAY<2?DISPLAY+1:0;
                 if(TEST) {
                     testCharge = testCharge < 100 ? testCharge + 1 : 0;
                 }
@@ -115,7 +115,7 @@ public class BatteryStatusDisplay extends Fragment {
      */
     protected void updateUI(int errorCode, String in){
         if(TEST) {
-            in = "10,10,10,10,0,995,10,10";
+            in = "10,75,0,58,15,152,48,30";
             errorCode = 0;
         }
         if(in==null || in.equals("")){
@@ -141,8 +141,9 @@ public class BatteryStatusDisplay extends Fragment {
                 if(TEST) {
                     batteryLevel = testCharge;
                 }
-                int current=((int) ((Long.parseLong(dataSet[4])<<8)&0xFF00))+(int) Long.parseLong(dataSet[5]);
-                int TTEorF = ((int) ((Long.parseLong(dataSet[2]) << 8) & 0xFF00)) + (int) Long.parseLong(dataSet[3]);
+                int TTEorF = parseInt(dataSet[2],dataSet[3]);
+                int current= parseInt(dataSet[4],dataSet[5]);
+
                 if((current>>15)==1){
                     current=current-65535;
                 }
@@ -177,23 +178,29 @@ public class BatteryStatusDisplay extends Fragment {
 
                 switch (DISPLAY) {
                     case 1:
+                        int volt=parseInt(dataSet[6],dataSet[7]);
+                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
+                        mTextChargeTitle.setText(getText(R.string.voltage));
+                        if(volt>1000){
+                            int voltV=volt/1000;
+                            int mV= volt-(voltV*1000);
+                            mTextCharge.setText(Integer.toString(voltV) + "."+Integer.toString(mV)+" V");
+                        }else{
+                            mTextCharge.setText(Integer.toString(volt)+" mV");
+                        }
+                        break;
+                    case 2:
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
                         mTextChargeTitle.setText(getText(R.string.current));
                         int absAmp=Math.abs(current);
                         if(absAmp>1000){
                             int amp=absAmp/1000;
                             int mAmp=absAmp-(amp*1000);
-                            if(current>0) {
-                                mTextCharge.setText(Integer.toString(amp) + "." + Integer.toString(mAmp) + " A");
-                            }else{
-                                mTextCharge.setText(Integer.toString(amp) + "." + Integer.toString(mAmp) + " A");
-                            }
+                            mTextCharge.setText(Integer.toString(amp) + "." + Integer.toString(mAmp) + " A");
+
                         }else{
-                            if(current>0) {
-                                mTextCharge.setText(Integer.toString(absAmp) + " mA");
-                            }else{
-                                mTextCharge.setText(Integer.toString(absAmp) + " mA");
-                            }
+                            mTextCharge.setText(Integer.toString(absAmp) + " mA");
+
                         }
                         break;
                     default:
@@ -236,6 +243,10 @@ public class BatteryStatusDisplay extends Fragment {
                 setTextColor(false);
                 break;
         }
+    }
+
+    private int parseInt(String upper, String lower){
+        return ((int) ((Long.parseLong(upper) << 8) & 0xFF00)) + (int) Long.parseLong(lower);
     }
 
     public void setButtonListener(BatteryStatusDisplay.buttonListener onClickListener){
