@@ -39,6 +39,7 @@ public class BatteryStatusDisplay extends Fragment {
     private int testCharge=0;
 
     private final boolean TEST=false;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,7 +247,15 @@ public class BatteryStatusDisplay extends Fragment {
     }
 
     private int parseInt(String upper, String lower){
-        return ((int) ((Long.parseLong(upper) << 8) & 0xFF00)) + (int) Long.parseLong(lower);
+        int upper8=Integer.parseInt(upper);
+        int lower8=Integer.parseInt(lower);
+        if(upper8<0){
+            upper8+=256;
+        }
+        if(lower8<0){
+            lower8+=256;
+        }
+        return ((upper8<< 8) & 0xFF00) + lower8;
     }
 
     public void setButtonListener(BatteryStatusDisplay.buttonListener onClickListener){

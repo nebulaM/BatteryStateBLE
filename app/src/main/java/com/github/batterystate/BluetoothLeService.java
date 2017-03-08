@@ -173,7 +173,11 @@ public class BluetoothLeService extends Service {
             }
             Log.d(TAG, "Received battery percent: "+dataSet[7]);
             Log.d(TAG, "Received battery health: "+dataSet[8]);
-            Log.d(TAG, "Received TTE/TTF: "+dataSet[9]);
+            Log.d(TAG, "Received TTE/TTF upper 8 bit: "+dataSet[9]);
+            Log.d(TAG, "Received TTE/TTF lower 8 bit: "+dataSet[10]);
+
+            Log.d(TAG, "Received current upper 8 bit: "+dataSet[11]);
+            Log.d(TAG, "Received current lower 8 bit: "+dataSet[12]);
 
             //length is data set plus error code
             StringBuilder sb=new StringBuilder();
