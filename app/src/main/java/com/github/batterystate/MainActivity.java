@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity{
                             }).show();
                 }
             }
-        },1600);
+        },5000);
 
     }
 
