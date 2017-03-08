@@ -196,9 +196,8 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
                         mTextChargeTitle.setText(getText(R.string.voltage));
                         if(volt>1000){
-                            int voltV=volt/1000;
-                            int mV= volt-(voltV*1000);
-                            mTextCharge.setText(Integer.toString(voltV) + "."+Integer.toString(mV)+" V");
+                            double v=volt/1000.0;
+                            mTextCharge.setText(Double.toString(v)+" V");
                         }else{
                             mTextCharge.setText(Integer.toString(volt)+" mV");
                         }
@@ -208,9 +207,8 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextChargeTitle.setText(getText(R.string.current));
                         int absAmp=Math.abs(current);
                         if(absAmp>1000){
-                            int amp=absAmp/1000;
-                            int mAmp=absAmp-(amp*1000);
-                            mTextCharge.setText(Integer.toString(amp) + "." + Integer.toString(mAmp) + " A");
+                            double a=absAmp/1000.0;
+                            mTextCharge.setText(Double.toString(a)+" A");
 
                         }else{
                             mTextCharge.setText(Integer.toString(absAmp) + " mA");

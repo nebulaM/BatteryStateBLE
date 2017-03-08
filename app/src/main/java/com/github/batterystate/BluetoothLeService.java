@@ -179,6 +179,9 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, "Received current upper 8 bit: "+dataSet[11]);
             Log.d(TAG, "Received current lower 8 bit: "+dataSet[12]);
 
+            Log.d(TAG, "Received volt upper 8 bit: "+dataSet[13]);
+            Log.d(TAG, "Received volt lower 8 bit: "+dataSet[14]);
+
             //length is data set plus error code
             StringBuilder sb=new StringBuilder();
 
