@@ -3,6 +3,7 @@ package com.github.batterystate;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -39,7 +40,11 @@ public class BatteryStatusDisplay extends Fragment {
     private int testCharge=0;
 
     private final boolean TEST=false;
-    
+
+    //clean tmpIn in 5 seconds
+    private final long tmpInTimeOut=5000;
+
+    private long tmpInLastUpdate;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +66,7 @@ public class BatteryStatusDisplay extends Fragment {
                 if(TEST) {
                     testCharge = testCharge < 100 ? testCharge + 1 : 0;
                 }
-                updateUI(0,tmpIn);
+                updateUI(99,tmpIn);
             }
         });
 
@@ -120,16 +125,24 @@ public class BatteryStatusDisplay extends Fragment {
             errorCode = 0;
         }
         if(in==null || in.equals("")){
-            return;
+            errorCode=4;
         }
-        tmpIn=in;
+        if(errorCode==0) {
+            tmpInLastUpdate= System.currentTimeMillis();
+            tmpIn = in;
+        }
+
+        if(errorCode==99 && System.currentTimeMillis()-tmpInLastUpdate>tmpInTimeOut){
+            errorCode=2;
+        }
+
         System.out.println("String in : "+in);
-        if(errorCode!=0){
+        if(errorCode!=0 &&errorCode!=99){
             mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
             mTextChargeTitle.setText("");
         }
         switch (errorCode){
-            case 0:
+            case 0: case 99:
                 String[] dataSet = in.split(",");
                 int batteryLevel=Integer.parseInt(dataSet[0]);
                 if(batteryLevel<0){
@@ -231,6 +244,14 @@ public class BatteryStatusDisplay extends Fragment {
                 mCharge.setData(0);
                 mHealth.setData(0);
                 mTextCharge.setText(getText(R.string.connected));
+                mTextHealth.setText("");
+                mTextTTE.setText(R.string.TTE_Default);
+                setTextColor(false);
+                break;
+            case 4:
+                mCharge.setData(0);
+                mHealth.setData(0);
+                mTextCharge.setText("Wrong Data");
                 mTextHealth.setText("");
                 mTextTTE.setText(R.string.TTE_Default);
                 setTextColor(false);
