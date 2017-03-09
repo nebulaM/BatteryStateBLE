@@ -3,7 +3,6 @@ package com.github.batterystate;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -32,7 +31,8 @@ public class BatteryStatusDisplay extends Fragment {
 
     private String mIP;
 
-    private int DISPLAY=0;
+    private int DISPLAY_CHARGE =0;
+    private int DISPLAY_HEALTH =0;
 
     private String tmpIn="";
 
@@ -62,7 +62,7 @@ public class BatteryStatusDisplay extends Fragment {
         mCharge.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DISPLAY=DISPLAY<2?DISPLAY+1:0;
+                DISPLAY_CHARGE = DISPLAY_CHARGE <2? DISPLAY_CHARGE +1:0;
                 if(TEST) {
                     testCharge = testCharge < 100 ? testCharge + 1 : 0;
                 }
@@ -77,6 +77,9 @@ public class BatteryStatusDisplay extends Fragment {
                         mToast.setText(mIP);
                         mToast.show();
                 }
+
+                DISPLAY_HEALTH=DISPLAY_HEALTH<1? DISPLAY_HEALTH+1:0;
+                updateUI(99,tmpIn);
             }
         });
 
@@ -179,10 +182,10 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
                     }
                 }
-                if(dataSet.length==12) {
+                if(dataSet.length==14) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < 4; ++i) {
-                        int data = Integer.parseInt(dataSet[8 + i]);
+                        int data = Integer.parseInt(dataSet[10 + i]);
                         if (data < 0) {
                             data = 256 + data;
                         }
@@ -195,7 +198,7 @@ public class BatteryStatusDisplay extends Fragment {
                 }
                 Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE/F is "+TTEorF +" current is " +current);
 
-                switch (DISPLAY) {
+                switch (DISPLAY_CHARGE) {
                     case 1:
                         int volt=parseInt(dataSet[6],dataSet[7]);
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
@@ -227,10 +230,23 @@ public class BatteryStatusDisplay extends Fragment {
                         break;
 
                 }
+                switch (DISPLAY_HEALTH){
+                    case 1:
+                        int cycle=parseInt(dataSet[8],dataSet[9]);
+                        mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
+                        mTextHealth.setText(String.valueOf(cycle));
+                        mTextHealthTitle.setText(getText(R.string.cycle));
+                        break;
+                    default:
+                        mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
+                        mTextHealthTitle.setText(getText(R.string.health));
+                        mTextHealth.setText(bound(Integer.toString(batteryHealth)));
+
+                }
                 mCharge.setData(batteryLevel);
                 mHealth.setData(batteryHealth);
 
-                mTextHealth.setText(bound(Integer.toString(batteryHealth)));
+
 
                 setTextColor(true);
                 break;
