@@ -116,7 +116,7 @@ public class BatteryStatusDisplay extends Fragment {
 
     /**
      * Update battery status UI
-     * @param errorCode 0 means no error
+     * @param errorCode 0 means no error, 99 means update from touching screen
      * @param in input String of 8 or 12(w/ IP) bytes, batteryLevel, batteryHealth, TTE/F(2 bytes), current(2 bytes), volt(2 bytes), IP(4 bytes)
      */
     protected void updateUI(int errorCode, String in){
@@ -161,14 +161,19 @@ public class BatteryStatusDisplay extends Fragment {
                 if((current>>15)==1){
                     current=current-65535;
                 }
-                if(current<=0) {
-                    if(TTEorF>60) {
+                //prevent from frequent flip btw full and empty
+                if(Math.abs(current)<30){
+                    mTextTTE.setText("full");
+                }
+                else if(current<=0) {
+                    //display in minute if time is less than 300 minutes
+                    if(TTEorF>300) {
                         mTextTTE.setText(String.valueOf(TTEorF/60) + " hr left");
                     }else{
                         mTextTTE.setText(String.valueOf(TTEorF) + " min left");
                     }
                 }else{
-                    if(TTEorF>60) {
+                    if(TTEorF>300) {
                         mTextTTE.setText(String.valueOf(TTEorF/60) + " hr to full");
                     }else{
                         mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
