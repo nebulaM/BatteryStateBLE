@@ -87,7 +87,7 @@ public class BluetoothLeService extends Service {
     private long mLastTimeNotify;
     private long mLastTimeSendToCloud;
 
-    private final long NOTIFY_INTERVAL=3000002;
+    private final long NOTIFY_INTERVAL=300002;
 
     private final long SEND_TO_CLOUD_PERIOD=600000;
     private boolean firstTime2Cloud;

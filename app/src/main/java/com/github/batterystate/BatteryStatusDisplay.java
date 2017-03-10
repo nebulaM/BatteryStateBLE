@@ -158,7 +158,7 @@ public class BatteryStatusDisplay extends Fragment {
                     current=current-65535;
                 }
                 //prevent from frequent flip btw full and empty
-                if(Math.abs(current)<30){
+                if(batteryLevel>95 && Math.abs(current)<30){
                     mTextTTE.setText("full");
                 }
                 else if(current<=0) {
