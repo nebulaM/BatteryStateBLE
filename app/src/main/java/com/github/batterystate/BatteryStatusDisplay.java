@@ -27,15 +27,10 @@ public class BatteryStatusDisplay extends Fragment {
     private DonutView mCharge;
     private DonutView mHealth;
 
-    private Toast mToast;
-
-    private String mIP;
-
     private int DISPLAY_CHARGE =0;
     private int DISPLAY_HEALTH =0;
 
     private String tmpIn="";
-
 
     private int testCharge=0;
 
@@ -48,7 +43,6 @@ public class BatteryStatusDisplay extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToast = Toast.makeText(getActivity().getApplicationContext(),"",Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -73,12 +67,8 @@ public class BatteryStatusDisplay extends Fragment {
         mHealth.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(!mToast.getView().isShown() && mIP !=null) {
-                        mToast.setText(mIP);
-                        mToast.show();
-                }
 
-                DISPLAY_HEALTH=DISPLAY_HEALTH<1? DISPLAY_HEALTH+1:0;
+                DISPLAY_HEALTH=DISPLAY_HEALTH<2? DISPLAY_HEALTH+1:0;
                 updateUI(99,tmpIn);
             }
         });
@@ -147,6 +137,9 @@ public class BatteryStatusDisplay extends Fragment {
         switch (errorCode){
             case 0: case 99:
                 String[] dataSet = in.split(",");
+                if(dataSet.length<12){
+                    return;
+                }
                 int batteryLevel=Integer.parseInt(dataSet[0]);
                 if(batteryLevel<0){
                     batteryLevel+=256;
@@ -182,20 +175,7 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
                     }
                 }
-                if(dataSet.length==14) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < 4; ++i) {
-                        int data = Integer.parseInt(dataSet[10 + i]);
-                        if (data < 0) {
-                            data = 256 + data;
-                        }
-                        sb.append(data);
-                        sb.append('.');
-                    }
-                    sb.setLength(sb.length() - 1);
-                    mIP =sb.toString();
-                    System.out.println("mIP: "+mIP);
-                }
+
                 Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE/F is "+TTEorF +" current is " +current);
 
                 switch (DISPLAY_CHARGE) {
@@ -236,6 +216,12 @@ public class BatteryStatusDisplay extends Fragment {
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
                         mTextHealth.setText(String.valueOf(cycle));
                         mTextHealthTitle.setText(getText(R.string.cycle));
+                        break;
+                    case 2:
+                        double repCap=parseInt(dataSet[10],dataSet[11])/100.0;
+                        mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+                        mTextHealth.setText(String.valueOf(repCap)+" Ah");
+                        mTextHealthTitle.setText("RepCap");
                         break;
                     default:
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);

@@ -37,6 +37,7 @@ import android.os.ParcelUuid;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -160,6 +161,11 @@ public class BluetoothLeService extends Service {
 
     }
 
+    private String mIP;
+    public String getIP(){
+        return mIP;
+    }
+
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
@@ -168,10 +174,28 @@ public class BluetoothLeService extends Service {
             byte[] dataSet=characteristic.getValue();
             //error from BLE server
 
-            if(dataSet[0]>0){
+            if(dataSet[0]!=0 &&dataSet[0]!=9){
                 return;
             }
-            Log.d(TAG, "Received battery percent: "+dataSet[7]);
+            if(dataSet.length==19 &&dataSet[0]==9) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 4; ++i) {
+                    int data = Integer.parseInt(String.valueOf(dataSet[15 + i]));
+                    if (data < 0) {
+                        data = 256 + data;
+                    }
+                    sb.append(data);
+                    sb.append('.');
+                }
+                sb.setLength(sb.length() - 1);
+                Log.d(TAG, "IP is "+sb.toString());
+                mIP=sb.toString();
+                //Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_LONG).show();
+            }
+
+            Log.d(TAG,"dataSet from BLE length is "+dataSet.length );
+
+            /*Log.d(TAG, "Received battery percent: "+dataSet[7]);
             Log.d(TAG, "Received battery health: "+dataSet[8]);
             Log.d(TAG, "Received TTE/TTF upper 8 bit: "+dataSet[9]);
             Log.d(TAG, "Received TTE/TTF lower 8 bit: "+dataSet[10]);
@@ -180,7 +204,7 @@ public class BluetoothLeService extends Service {
             Log.d(TAG, "Received current lower 8 bit: "+dataSet[12]);
 
             Log.d(TAG, "Received volt upper 8 bit: "+dataSet[13]);
-            Log.d(TAG, "Received volt lower 8 bit: "+dataSet[14]);
+            Log.d(TAG, "Received volt lower 8 bit: "+dataSet[14]);*/
 
             //length is data set plus error code
             StringBuilder sb=new StringBuilder();

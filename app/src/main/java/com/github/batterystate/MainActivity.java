@@ -132,7 +132,15 @@ public class MainActivity extends AppCompatActivity{
                         mBatteryDisplayFragment.updateUI(1,"");
                     }
                     else {
+                        String ip=mBluetoothLeService.getIP();
+                        if(ip!=null && !ip.equals("")){
+                            mToast.setText(ip);
+                            mToast.setDuration(Toast.LENGTH_LONG);
+                            mToast.show();
+                            mToast.setDuration(Toast.LENGTH_SHORT);
+                        }
                         mBluetoothLeService.readCharacteristic(characteristic);
+
                     }
                 }else if(action.equals("subBLE")){
                     subscribeBLE();
@@ -158,7 +166,7 @@ public class MainActivity extends AppCompatActivity{
 
         getFragmentManager().beginTransaction().add(R.id.frag_container, mBatteryDisplayFragment).commit();
 
-        final Handler handler = new Handler();
+        /*final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -174,7 +182,7 @@ public class MainActivity extends AppCompatActivity{
                             }).show();
                 }
             }
-        },5000);
+        },5000);*/
 
     }
 
