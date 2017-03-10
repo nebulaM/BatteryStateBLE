@@ -88,7 +88,11 @@ public class BatteryStatusDisplay extends Fragment {
             }
         });
 
+        readBLE.setAlpha(0.0f);
+
         ImageButton subscribeBLEBtn = (ImageButton) view.findViewById(R.id.setNotification);
+        subscribeBLEBtn.setAlpha(0.0f);
+
         subscribeBLEBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +185,7 @@ public class BatteryStatusDisplay extends Fragment {
                 switch (DISPLAY_CHARGE) {
                     case 1:
                         int volt=parseInt(dataSet[6],dataSet[7]);
-                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
+                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextChargeTitle.setText(getText(R.string.voltage));
                         if(volt>1000){
                             double v=volt/1000.0;
@@ -191,7 +195,7 @@ public class BatteryStatusDisplay extends Fragment {
                         }
                         break;
                     case 2:
-                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
+                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextChargeTitle.setText(getText(R.string.current));
                         int absAmp=Math.abs(current);
                         if(absAmp>1000){
@@ -219,7 +223,7 @@ public class BatteryStatusDisplay extends Fragment {
                         break;
                     case 2:
                         double repCap=parseInt(dataSet[10],dataSet[11])/100.0;
-                        mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+                        mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextHealth.setText(String.valueOf(repCap)+" Ah");
                         mTextHealthTitle.setText("RepCap");
                         break;

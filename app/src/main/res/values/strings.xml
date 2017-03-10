@@ -14,8 +14,6 @@
 
     <string name="unknown_device">Unknown device</string>
 
-
-
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
@@ -35,7 +33,7 @@
     <string name="no_connection">No Connection</string>
     <string name="wrong_device">Wrong Device</string>
 
-    <string name="subscribe">Auto Update Battery Status</string>
+    <string name="subscribe">Auto Updating&#8230;</string>
     <string name="unSubscribe">Cancel Auto Update</string>
 
     <string name="TTE">min left</string>

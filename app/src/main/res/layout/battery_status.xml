@@ -15,6 +15,7 @@
             android:layout_gravity="center_horizontal"
             >
                 <com.github.batterystate.DonutView
+                    android:layout_marginTop="@dimen/padding"
                     android:id="@+id/ViewBatteryLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -26,12 +27,12 @@
                     custom:donut_color_middle_fade="@color/orange_fade"
                     custom:donut_color_empty="@color/red"
                     custom:donut_color_empty_fade="@color/red_fade"
-                    custom:radius="90dp" />
+                    custom:radius="100dp" />
                 <TextView android:id="@+id/textViewBatLevelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="85dp"
                     android:textColor="@color/red_fade"
                     android:textSize="24sp"
                     android:fontFamily="sans-serif-thin"
@@ -41,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="85dp"
+                    android:layout_marginTop="110dp"
                     android:textColor="@color/red_fade"
                     android:textSize="56sp"
                     android:fontFamily="sans-serif-thin"
@@ -50,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="65dp"
                     android:textColor="@color/red_fade"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-thin"
@@ -82,7 +83,7 @@
                     custom:donut_color_middle_fade="@color/orange_fade"
                     custom:donut_color_empty="@color/red"
                     custom:donut_color_empty_fade="@color/red_fade"
-                    custom:radius="90dp" />
+                    custom:radius="100dp" />
                 <TextView android:id="@+id/textViewBatHealthTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,7 +106,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:layout_weight="0.5"
+            android:layout_weight="0.3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
