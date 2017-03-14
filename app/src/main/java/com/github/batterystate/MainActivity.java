@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -105,7 +107,8 @@ public class MainActivity extends AppCompatActivity{
         //mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
-        // getActionBar().setTitle(mDeviceName);
+        getSupportActionBar().setTitle(intent.getStringExtra(EXTRAS_DEVICE_NAME));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         // getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initializes Bluetooth adapter.
