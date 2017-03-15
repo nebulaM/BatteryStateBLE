@@ -16,7 +16,9 @@
 
 package com.github.batterystate;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -84,10 +86,9 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_Battery_Level_Percent =UUID.fromString(SampleGattAttributes.Battery_Level_Percent);
 
-    private long mLastTimeNotify;
     private long mLastTimeSendToCloud;
 
-    private final long NOTIFY_INTERVAL=300002;
+    private int mChargeLevel=100;
 
     private final long SEND_TO_CLOUD_PERIOD=600000;
     private boolean firstTime2Cloud;
@@ -217,31 +218,38 @@ public class BluetoothLeService extends Service {
             sb.setLength(sb.length()-1);
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
-            if(dataSet[7]<=20){
-                if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
-                    Log.d(TAG,"show Notification!");
 
-                    Thread t=new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                            v.vibrate(800);
-                        }
-                    });
-                    t.start();
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.ic_low_battery)
-                            .setContentTitle(getText(R.string.notify_low_bat_title))
-                            .setContentText(getText(R.string.notify_low_bat_text));
-                    NotificationManager mNotifyMgr =
-                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    mNotifyMgr.notify(1, mBuilder.build());
+            if(dataSet[7]<=15){
+                if(dataSet[7]<mChargeLevel) {
+                    if(dataSet[7]==0 ||dataSet[7]==5 || dataSet[7]==10
+                            || dataSet[7]==15 || mChargeLevel==100){
 
-                    try{t.join();}catch (InterruptedException e){e.printStackTrace();}
+                        String lowBatMSG=getText(R.string.notify_low_bat_text)+String.valueOf(dataSet[7])+"%";
 
-                    mLastTimeNotify=System.currentTimeMillis();
+                        Intent click=new Intent(this,MainActivity.class);
 
+                        click.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+                        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,click,PendingIntent.FLAG_CANCEL_CURRENT);
+
+                        Notification mNotify = new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_low_battery)
+                                .setContentTitle(getText(R.string.notify_low_bat_title))
+                                .setContentText(lowBatMSG)
+                                .setAutoCancel(true)
+                                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
+                                .setContentIntent(pendingIntent).build();
+
+                        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        mNotifyMgr.notify(1, mNotify);
+
+                        mChargeLevel = (int) dataSet[7];
+                        Log.d(TAG,"charge "+mChargeLevel);
+                    }
                 }
+            }else{
+                mChargeLevel = (int) dataSet[7];
             }
 
             //send to cloud server
@@ -357,7 +365,6 @@ public class BluetoothLeService extends Service {
         }
 
         //give some time to wait for battery data gets stable
-        mLastTimeNotify=System.currentTimeMillis();
         mLastTimeSendToCloud=System.currentTimeMillis();
         firstTime2Cloud=true;
 
@@ -388,7 +395,6 @@ public class BluetoothLeService extends Service {
                 mConnectionState = STATE_CONNECTING;
 
                 //give some time to wait for battery data gets stable
-                mLastTimeNotify=System.currentTimeMillis();
                 mLastTimeSendToCloud=System.currentTimeMillis();
                 firstTime2Cloud=true;
 

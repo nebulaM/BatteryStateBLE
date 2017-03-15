@@ -21,8 +21,8 @@
     <string name="menu_stop">Stop</string>
 
 
-    <string name="notify_low_bat_title">Low Battery</string>
-    <string name="notify_low_bat_text">WheelChair battery level is low!</string>
+    <string name="notify_low_bat_title">Cadex Battery Low</string>
+    <string name="notify_low_bat_text">Battery level is only&#160;</string>
 
     <string name="charge">Charge</string>
     <string name="current">Current</string>

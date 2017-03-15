@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity{
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
     public static final String DEVICE_NAME="Battery";
     private String mDeviceAddress;
+    private String mDeviceName;
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private BatteryStatusDisplay mBatteryDisplayFragment;
@@ -104,10 +105,10 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Intent intent = getIntent();
-        //mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
-        getSupportActionBar().setTitle(intent.getStringExtra(EXTRAS_DEVICE_NAME));
+        getSupportActionBar().setTitle(mDeviceName);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         // getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -293,7 +294,8 @@ public class MainActivity extends AppCompatActivity{
                     Log.d(TAG, "mBluetoothLeService is null ");
                 }
                 if(!mBluetoothLeService.connect(mDeviceAddress)){
-                    mToast.setText(R.string.connectFailToast);
+
+                    mToast.setText("Device address is "+ mDeviceAddress+". "+getText(R.string.connectFailToast));
                     mToast.show();
                 }
                 return true;
