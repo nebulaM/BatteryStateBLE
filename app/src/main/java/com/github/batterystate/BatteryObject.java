@@ -62,6 +62,24 @@ import java.util.Calendar;
         Log.d(TAG,"@setCharge: battery charge "+mCharge);
     }
 
+    @DynamoDBAttribute(attributeName = "Cycle")
+    public String getCycle() {
+        return mCycle;
+    }
+    public void setCycle(String Cycle){
+        mCycle=Cycle;
+        Log.d(TAG,"@setCycle: battery Cycle "+mCycle);
+    }
+
+    @DynamoDBAttribute(attributeName = "RepCap(Ah)")
+    public String getRepCap() {
+        return mRepCap;
+    }
+    public void setRepCap(String RepCap){
+        mRepCap=RepCap;
+        Log.d(TAG,"@setRepCap: battery RepCap "+mRepCap);
+    }
+
     @DynamoDBAttribute(attributeName = "Last-Update")
     public String getLastUpdate() {
         return mLastUpdate;
@@ -85,21 +103,5 @@ import java.util.Calendar;
             Log.d(TAG,"send to dynamodb: charge "+mCharge+" health "+mHealth+" at "+mLastUpdate);
         }
     }*/
-    @DynamoDBAttribute(attributeName = "Cycle")
-    public String getCycle() {
-        return mCycle;
-    }
-    public void setCycle(String Cycle){
-        mCycle=Cycle;
-        Log.d(TAG,"@setCycle: battery Cycle "+mCycle);
-    }
 
-    @DynamoDBAttribute(attributeName = "RepCap(Ah)")
-    public String getRepCap() {
-        return mRepCap;
-    }
-    public void setRepCap(String RepCap){
-        mRepCap=RepCap;
-        Log.d(TAG,"@setRepCap: battery RepCap "+mRepCap);
-    }
 }
