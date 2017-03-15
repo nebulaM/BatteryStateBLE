@@ -20,9 +20,11 @@ import java.util.Calendar;
     private String mLastUpdate;
     private String mBatteryType;
 
+    private String mCycle;
+    private String mRepCap;
+
     public BatteryObject(){
         //TODO:find a way to determine battery type
-        setBatteryType("Li-on");
     }
 
     @DynamoDBHashKey(attributeName = "serial-num")
@@ -32,13 +34,15 @@ import java.util.Calendar;
     public void setSerialNum(String serialNum){
         mSerialNum=serialNum;
     }
-    @DynamoDBAttribute(attributeName = "Battery-Type")
+    /*@DynamoDBAttribute(attributeName = "Battery-Type")
     public String getBatteryType() {
         return mBatteryType;
     }
     public void setBatteryType(String batteryType){
         mBatteryType=batteryType;
-    }
+    }*/
+
+
 
     @DynamoDBAttribute(attributeName = "Health")
     public String getHealth() {
@@ -81,5 +85,21 @@ import java.util.Calendar;
             Log.d(TAG,"send to dynamodb: charge "+mCharge+" health "+mHealth+" at "+mLastUpdate);
         }
     }*/
+    @DynamoDBAttribute(attributeName = "Cycle")
+    public String getCycle() {
+        return mCycle;
+    }
+    public void setCycle(String Cycle){
+        mCycle=Cycle;
+        Log.d(TAG,"@setCycle: battery Cycle "+mCycle);
+    }
 
+    @DynamoDBAttribute(attributeName = "RepCap(Ah)")
+    public String getRepCap() {
+        return mRepCap;
+    }
+    public void setRepCap(String RepCap){
+        mRepCap=RepCap;
+        Log.d(TAG,"@setRepCap: battery RepCap "+mRepCap);
+    }
 }

@@ -236,8 +236,6 @@ public class BatteryStatusDisplay extends Fragment {
                 mCharge.setData(batteryLevel);
                 mHealth.setData(batteryHealth);
 
-
-
                 setTextColor(true);
                 break;
 
@@ -276,9 +274,21 @@ public class BatteryStatusDisplay extends Fragment {
         }
     }
 
-    private int parseInt(String upper, String lower){
+    protected static int parseInt(String upper, String lower){
         int upper8=Integer.parseInt(upper);
         int lower8=Integer.parseInt(lower);
+        if(upper8<0){
+            upper8+=256;
+        }
+        if(lower8<0){
+            lower8+=256;
+        }
+        return ((upper8<< 8) & 0xFF00) + lower8;
+    }
+
+    protected static int parseInt(byte upper, byte lower){
+        int upper8=(int)upper;
+        int lower8=(int)lower;
         if(upper8<0){
             upper8+=256;
         }

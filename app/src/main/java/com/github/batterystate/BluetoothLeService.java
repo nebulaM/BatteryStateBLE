@@ -217,7 +217,7 @@ public class BluetoothLeService extends Service {
             sb.setLength(sb.length()-1);
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
-            if(dataSet[7]<=80){
+            if(dataSet[7]<=20){
                 if(System.currentTimeMillis()-mLastTimeNotify>NOTIFY_INTERVAL){
                     Log.d(TAG,"show Notification!");
 
@@ -248,17 +248,12 @@ public class BluetoothLeService extends Service {
             if(isNetworkAvailable() &&
                     ((firstTime2Cloud&&System.currentTimeMillis()-mLastTimeSendToCloud>10000)
                             || (System.currentTimeMillis()-mLastTimeSendToCloud>SEND_TO_CLOUD_PERIOD))) {
-                StringBuilder sbSerialNumber=new StringBuilder(6);
-                for(int i=1;i<=6;i++){
-                    sbSerialNumber.append(dataSet[i]);
-                }
-                final String serialNumber=sbSerialNumber.toString();
-                final String charge=Integer.toString((int)dataSet[7]);
-                final String health=Integer.toString((int)dataSet[8]);
+
+                final byte[] dataSetCloud=dataSet;
                 Thread t=new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sendToCloud(serialNumber,charge,health);
+                        sendToCloud(dataSetCloud);
                     }
                 });
                 t.start();
@@ -283,7 +278,17 @@ public class BluetoothLeService extends Service {
     }
     protected static Calendar c = Calendar.getInstance();
     protected static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private void sendToCloud(String serialNumber, String charge, String health){
+    private void sendToCloud(byte[] dataSet){
+        StringBuilder sbSerialNumber=new StringBuilder(6);
+        for(int i=1;i<=6;i++){
+            sbSerialNumber.append(dataSet[i]);
+        }
+        String serialNumber=sbSerialNumber.toString();
+        String charge=Integer.toString((int)dataSet[7]);
+        String health=Integer.toString((int)dataSet[8]);
+
+        String cycle=Integer.toString(BatteryStatusDisplay.parseInt(dataSet[15],dataSet[16]));
+        String repCap=String.valueOf((double)BatteryStatusDisplay.parseInt(dataSet[17],dataSet[18])/100.0);
         if (mBatteryData2AWS == null) {
             mBatteryData2AWS = new BatteryObject();
         }
@@ -291,6 +296,8 @@ public class BluetoothLeService extends Service {
             mBatteryData2AWS.setSerialNum(serialNumber);
             mBatteryData2AWS.setCharge(charge);
             mBatteryData2AWS.setHealth(health);
+            mBatteryData2AWS.setCycle(cycle);
+            mBatteryData2AWS.setRepCap(repCap);
             mBatteryData2AWS.setUpdate(df.format(c.getTime()));
             mapperAWSDB.save(mBatteryData2AWS);
         } catch (AmazonServiceException e) {
