@@ -24,7 +24,6 @@ import java.util.Calendar;
     private String mRepCap;
 
     public BatteryObject(){
-        //TODO:find a way to determine battery type
     }
 
     @DynamoDBHashKey(attributeName = "serial-num")
@@ -49,7 +48,7 @@ import java.util.Calendar;
         return mHealth;
     }
     public void setHealth(String health){
-        mHealth=BatteryStatusDisplay.bound(health);
+        mHealth=util.bound(health);
         Log.d(TAG,"@setHealth: battery health "+mHealth);
     }
 
@@ -58,7 +57,7 @@ import java.util.Calendar;
         return mCharge;
     }
     public void setCharge(String charge){
-        mCharge=BatteryStatusDisplay.bound(charge);
+        mCharge=util.bound(charge);
         Log.d(TAG,"@setCharge: battery charge "+mCharge);
     }
 

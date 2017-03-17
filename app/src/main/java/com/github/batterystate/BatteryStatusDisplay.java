@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
@@ -144,19 +143,14 @@ public class BatteryStatusDisplay extends Fragment {
                 if(dataSet.length<12){
                     return;
                 }
-                int batteryLevel=Integer.parseInt(dataSet[0]);
-                if(batteryLevel<0){
-                    batteryLevel+=256;
-                }
-                int batteryHealth=Integer.parseInt(dataSet[1]);
-                if(batteryHealth<0){
-                    batteryHealth+=256;
-                }
+                int batteryLevel=util.parseIntBound100(dataSet[0]);
+                int batteryHealth=util.parseIntBound100(dataSet[1]);
+
                 if(TEST) {
                     batteryLevel = testCharge;
                 }
-                int TTEorF = parseInt(dataSet[2],dataSet[3]);
-                int current= parseInt(dataSet[4],dataSet[5]);
+                int TTEorF = util.parseInt(dataSet[2],dataSet[3]);
+                int current= util.parseInt(dataSet[4],dataSet[5]);
 
                 if((current>>15)==1){
                     current=current-65535;
@@ -184,7 +178,7 @@ public class BatteryStatusDisplay extends Fragment {
 
                 switch (DISPLAY_CHARGE) {
                     case 1:
-                        int volt=parseInt(dataSet[6],dataSet[7]);
+                        int volt=util.parseInt(dataSet[6],dataSet[7]);
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextChargeTitle.setText(getText(R.string.voltage));
                         if(volt>1000){
@@ -210,19 +204,19 @@ public class BatteryStatusDisplay extends Fragment {
                     default:
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
                         mTextChargeTitle.setText(getText(R.string.charge));
-                        mTextCharge.setText(bound(Integer.toString(batteryLevel)));
+                        mTextCharge.setText(util.bound(Integer.toString(batteryLevel)));
                         break;
 
                 }
                 switch (DISPLAY_HEALTH){
                     case 1:
-                        int cycle=parseInt(dataSet[8],dataSet[9]);
+                        int cycle=util.parseInt(dataSet[8],dataSet[9]);
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
                         mTextHealth.setText(String.valueOf(cycle));
                         mTextHealthTitle.setText(getText(R.string.cycle));
                         break;
                     case 2:
-                        double repCap=parseInt(dataSet[10],dataSet[11])/100.0;
+                        double repCap=util.parseInt(dataSet[10],dataSet[11])/100.0;
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextHealth.setText(String.valueOf(repCap)+" Ah");
                         mTextHealthTitle.setText("RepCap");
@@ -230,7 +224,7 @@ public class BatteryStatusDisplay extends Fragment {
                     default:
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
                         mTextHealthTitle.setText(getText(R.string.health));
-                        mTextHealth.setText(bound(Integer.toString(batteryHealth)));
+                        mTextHealth.setText(util.bound(Integer.toString(batteryHealth)));
 
                 }
                 mCharge.setData(batteryLevel);
@@ -274,47 +268,13 @@ public class BatteryStatusDisplay extends Fragment {
         }
     }
 
-    protected static int parseInt(String upper, String lower){
-        int upper8=Integer.parseInt(upper);
-        int lower8=Integer.parseInt(lower);
-        if(upper8<0){
-            upper8+=256;
-        }
-        if(lower8<0){
-            lower8+=256;
-        }
-        return ((upper8<< 8) & 0xFF00) + lower8;
-    }
 
-    protected static int parseInt(byte upper, byte lower){
-        int upper8=(int)upper;
-        int lower8=(int)lower;
-        if(upper8<0){
-            upper8+=256;
-        }
-        if(lower8<0){
-            lower8+=256;
-        }
-        return ((upper8<< 8) & 0xFF00) + lower8;
-    }
 
     public void setButtonListener(BatteryStatusDisplay.buttonListener onClickListener){
         mButtonListener=onClickListener;
     }
 
-    protected static String bound(String in){
-        int data=Integer.parseInt(in);
-        if(data<0){
-            data+=256;
-        }
-        if(data>100){
-            return String.valueOf(100);
-        }else if(data<0){
-            return String.valueOf(0);
-        }else {
-            return in;
-        }
-    }
+
 
     private void setTextColor(boolean connected){
         int chargeColor;

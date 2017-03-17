@@ -36,10 +36,8 @@ import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -48,7 +46,6 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -295,8 +292,8 @@ public class BluetoothLeService extends Service {
         String charge=Integer.toString((int)dataSet[7]);
         String health=Integer.toString((int)dataSet[8]);
 
-        String cycle=Integer.toString(BatteryStatusDisplay.parseInt(dataSet[15],dataSet[16]));
-        String repCap=String.valueOf((double)BatteryStatusDisplay.parseInt(dataSet[17],dataSet[18])/100.0);
+        String cycle=Integer.toString(util.parseInt(dataSet[15],dataSet[16]));
+        String repCap=String.valueOf((double)util.parseInt(dataSet[17],dataSet[18])/100.0);
         if (mBatteryData2AWS == null) {
             mBatteryData2AWS = new BatteryObject();
         }
