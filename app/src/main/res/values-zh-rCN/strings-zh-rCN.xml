@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">轮椅电池</string>
+    <string name="battery_level">0</string>string>
+    <string name="battery_health">0</string>string>
+
+
+    <string name="label_state">状态:</string>
+    <string name="connected">已连接</string>
+    <string name="disconnected">已断开</string>
+
+    <string name="title_devices">扫描蓝牙设备</string>
+    <string name="ble_not_supported">设备不支持低BLE</string>
+    <string name="error_bluetooth_not_supported">设备不支持蓝牙</string>
+
+    <string name="unknown_device">未知设备</string>
+    <string name="wrong_data">错误数据</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">连接</string>
+    <string name="menu_disconnect">断开</string>
+    <string name="menu_scan">扫描设备</string>
+    <string name="menu_stop">停止扫描</string>
+
+
+    <string name="notify_low_bat_title">Cadex电池电量低</string>
+    <string name="notify_low_bat_text">剩余电量为</string>
+
+    <string name="charge">电量</string>
+    <string name="current">电流</string>
+    <string name="voltage">电压</string>
+    <string name="cycle">循环次数</string>
+    <string name="capacity">容量</string>
+
+    <string name="full_battery">满电</string>
+    <string name="hr_left">小时剩余</string>
+    <string name="min_left">分钟剩余</string>
+    <string name="hr_full">小时后充满</string>
+    <string name="min_full">分钟后充满</string>
+
+    <string name="health">健康度</string>
+    <string name="no_connection">未连接</string>
+    <string name="wrong_device">错误的设备</string>
+
+    <string name="subscribe">自动更新电池数据&#8230;</string>
+    <string name="unSubscribe">取消自动更新</string>
+
+    <string name="TTE">分钟剩余</string>
+    <string name="TTE_Default">--分钟剩余</string>
+
+    <string name="dismiss">关闭</string>
+    <string name="error">错误</string>
+    <string name="connectFail">无法连接。请点击连接按钮重试。如果多次重试无效，请重启手机的蓝牙。</string>
+    <string name="connectFailToast">连接失败，请重试。</string>
+
+    <string name="theme">主题</string>
+</resources>

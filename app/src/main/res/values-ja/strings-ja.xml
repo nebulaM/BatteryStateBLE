@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">車いす電池</string>
+    <string name="battery_level">0</string>string>
+    <string name="battery_health">0</string>string>
+
+
+    <string name="label_state">状態:</string>
+    <string name="connected">接続している</string>
+    <string name="disconnected">遮断された</string>
+
+    <string name="title_devices">スキャン</string>
+    <string name="ble_not_supported">この装置BLEをサポートしません。</string>
+    <string name="error_bluetooth_not_supported">この装置Bluetoothをサポートしません</string>
+
+    <string name="unknown_device">未知の装置</string>
+    <string name="wrong_data">異常なデータ</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">接続する</string>
+    <string name="menu_disconnect">切る</string>
+    <string name="menu_scan">スキャン</string>
+    <string name="menu_stop">停止</string>
+
+
+    <string name="notify_low_bat_title">Cadexバッテリー残量が少ない</string>
+    <string name="notify_low_bat_text">電池残量</string>
+
+    <string name="charge">残量</string>
+    <string name="current">電流</string>
+    <string name="voltage">電圧</string>
+    <string name="cycle">充放電回数</string>
+    <string name="capacity">容量</string>
+
+    <string name="full_battery">充満した</string>
+    <string name="hr_left">時間残り</string>
+    <string name="min_left">分残り</string>
+    <string name="hr_full">時間後充電完了</string>
+    <string name="min_full">分後充電完了</string>
+
+    <string name="health">健康度</string>
+    <string name="no_connection">接続していない</string>
+    <string name="wrong_device">間違う装置</string>
+
+    <string name="subscribe">自動更新&#8230;</string>
+    <string name="unSubscribe">自動更新キャンセル</string>
+
+    <string name="TTE">分残り</string>
+    <string name="TTE_Default">--分残り</string>
+
+    <string name="dismiss">閉じる</string>
+    <string name="error">エラー</string>
+    <string name="connectFail">接続できません。もう一度やり直してください。また失敗したら、携帯のBluetoothを再起動してください</string>
+    <string name="connectFailToast">接続は失敗しました。もう一度やり直してください。</string>
+
+    <string name="theme">テーマ</string>
+</resources>
