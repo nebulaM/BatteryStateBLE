@@ -117,7 +117,7 @@ public class BatteryStatusDisplay extends Fragment {
      */
     protected void updateUI(int errorCode, String in){
         if(TEST) {
-            in = "10,75,0,58,15,152,48,30";
+            in = "10,75,0,9,15,152,48,30, 35,35,35,35";
             errorCode = 0;
         }
         if(in==null || in.equals("")){
@@ -157,20 +157,20 @@ public class BatteryStatusDisplay extends Fragment {
                 }
                 //prevent from frequent flip btw full and empty
                 if(batteryLevel>95 && Math.abs(current)<30){
-                    mTextTTE.setText("full");
+                    mTextTTE.setText(R.string.full_battery);
                 }
                 else if(current<=0) {
                     //display in minute if time is less than 300 minutes
                     if(TTEorF>300) {
-                        mTextTTE.setText(String.valueOf(TTEorF/60) + " hr left");
+                        mTextTTE.setText(String.format("%01d "+ getText(R.string.hr_left),TTEorF/60));
                     }else{
-                        mTextTTE.setText(String.valueOf(TTEorF) + " min left");
+                        mTextTTE.setText(String.format("%01d "+ getText(R.string.min_left),TTEorF));
                     }
                 }else{
                     if(TTEorF>300) {
-                        mTextTTE.setText(String.valueOf(TTEorF/60) + " hr to full");
+                        mTextTTE.setText(String.format("%01d "+ getText(R.string.hr_full),TTEorF/60));
                     }else{
-                        mTextTTE.setText(String.valueOf(TTEorF) + " min to full");
+                        mTextTTE.setText(String.format("%01d "+ getText(R.string.min_full),TTEorF));
                     }
                 }
 
@@ -219,7 +219,7 @@ public class BatteryStatusDisplay extends Fragment {
                         double repCap=util.parseInt(dataSet[10],dataSet[11])/100.0;
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,42);
                         mTextHealth.setText(String.valueOf(repCap)+" Ah");
-                        mTextHealthTitle.setText("RepCap");
+                        mTextHealthTitle.setText(R.string.capacity);
                         break;
                     default:
                         mTextHealth.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);
@@ -252,7 +252,7 @@ public class BatteryStatusDisplay extends Fragment {
             case 4:
                 mCharge.setData(0);
                 mHealth.setData(0);
-                mTextCharge.setText("Wrong Data");
+                mTextCharge.setText(R.string.wrong_data);
                 mTextHealth.setText("");
                 mTextTTE.setText(R.string.TTE_Default);
                 setTextColor(false);

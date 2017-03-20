@@ -2,7 +2,7 @@
     <string name="app_name">WheelChair Power</string>
     <string name="battery_level">0</string>string>
     <string name="battery_health">0</string>string>
-    <string name="font_size">20sp</string>string>
+
 
     <string name="label_state">State:</string>
     <string name="connected">Connected</string>
@@ -13,6 +13,7 @@
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 
     <string name="unknown_device">Unknown device</string>
+    <string name="wrong_data">Wrong Data</string>
 
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
@@ -28,6 +29,13 @@
     <string name="current">Current</string>
     <string name="voltage">Voltage</string>
     <string name="cycle">Cycle</string>
+    <string name="capacity">Capacity</string>
+
+    <string name="full_battery">Full</string>
+    <string name="hr_left"> hr left</string>
+    <string name="min_left"> min left</string>
+    <string name="hr_full"> hr to full</string>
+    <string name="min_full"> min to full</string>
 
     <string name="health">Health</string>
     <string name="no_connection">No Connection</string>
