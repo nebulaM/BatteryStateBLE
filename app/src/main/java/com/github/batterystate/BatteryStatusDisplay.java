@@ -117,7 +117,7 @@ public class BatteryStatusDisplay extends Fragment {
      */
     protected void updateUI(int errorCode, String in){
         if(TEST) {
-            in = "10,75,0,9,15,152,48,30, 35,35,35,35";
+            in = "10,75,0,9,15,152,48,30,35,35,35,35";
             errorCode = 0;
         }
         if(in==null || in.equals("")){
