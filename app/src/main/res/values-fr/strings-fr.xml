@@ -9,8 +9,8 @@
     <string name="disconnected">Débranché</string>
 
     <string name="title_devices">BLE Scanner</string>
-    <string name="ble_not_supported">BLE n'est pas pris en charge</string>
-    <string name="error_bluetooth_not_supported">Bluetooth n'est pas pris en charge.</string>
+    <string name="ble_not_supported">BLE n\'est pas pris en charge</string>
+    <string name="error_bluetooth_not_supported">Bluetooth n\'est pas pris en charge.</string>
 
     <string name="unknown_device">Périphérique Inconnu</string>
     <string name="wrong_data">Mauvaises Données</string>
@@ -49,7 +49,7 @@
 
     <string name="dismiss">Rejeter</string>
     <string name="error">Erreur</string>
-    <string name="connectFail">Impossible de se connecter à la batterie. Veuillez réessayer. S'il ne fonctionne toujours pas, veuillez redémarrer le bluetooth sur votre téléphone.</string>
+    <string name="connectFail">Impossible de se connecter à la batterie. Veuillez réessayer. S\'il ne fonctionne toujours pas, veuillez redémarrer le bluetooth sur votre téléphone.</string>
     <string name="connectFailToast">La connexion a échoué. Veuillez réessayer.</string>
 
     <string name="theme">Thème</string>
