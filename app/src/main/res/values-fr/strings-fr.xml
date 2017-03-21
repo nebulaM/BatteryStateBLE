@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Fauteuil Roulant Batterie</string>
+    <string name="battery_level">0</string>string>
+    <string name="battery_health">0</string>string>
+
+
+    <string name="label_state">Etat:</string>
+    <string name="connected">Connecté</string>
+    <string name="disconnected">Débranché</string>
+
+    <string name="title_devices">BLE Scanner</string>
+    <string name="ble_not_supported">BLE n'est pas pris en charge</string>
+    <string name="error_bluetooth_not_supported">Bluetooth n'est pas pris en charge.</string>
+
+    <string name="unknown_device">Périphérique Inconnu</string>
+    <string name="wrong_data">Mauvaises Données</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Déconnecter</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Arrêtez</string>
+
+
+    <string name="notify_low_bat_title">Cadex Batterie Faible</string>
+    <string name="notify_low_bat_text">Niveau de batterie est seulement&#160;</string>
+
+    <string name="charge">Charge</string>
+    <string name="current">Actuel</string>
+    <string name="voltage">Tension</string>
+    <string name="cycle">Cycle</string>
+    <string name="capacity">Capacité</string>
+
+    <string name="full_battery">Plein</string>
+    <string name="hr_left"> hr left</string>
+    <string name="min_left"> min left</string>
+    <string name="hr_full"> hr to full</string>
+    <string name="min_full"> min to full</string>
+
+    <string name="health">Santé</string>
+    <string name="no_connection">Pas de connection</string>
+    <string name="wrong_device">Mauvais Appareil</string>
+
+    <string name="subscribe">Mise à jour automatique&#8230;</string>
+    <string name="unSubscribe">Annuler la mise à jour automatique</string>
+
+    <string name="TTE">min left</string>
+    <string name="TTE_Default">-- min left</string>
+
+    <string name="dismiss">Rejeter</string>
+    <string name="error">Erreur</string>
+    <string name="connectFail">Impossible de se connecter à la batterie. Veuillez réessayer. S'il ne fonctionne toujours pas, veuillez redémarrer le bluetooth sur votre téléphone.</string>
+    <string name="connectFailToast">La connexion a échoué. Veuillez réessayer.</string>
+
+    <string name="theme">Thème</string>
+</resources>
