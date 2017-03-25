@@ -29,7 +29,7 @@
     <string name="current">電流</string>
     <string name="voltage">電圧</string>
     <string name="cycle">充放電回数</string>
-    <string name="capacity">容量</string>
+    <string name="capacity">残り電池容量</string>
 
     <string name="full_battery">充満した</string>
     <string name="hr_left">時間残り</string>

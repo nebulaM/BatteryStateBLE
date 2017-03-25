@@ -29,7 +29,7 @@
     <string name="current">Actuel</string>
     <string name="voltage">Tension</string>
     <string name="cycle">Cycle</string>
-    <string name="capacity">Capacité</string>
+    <string name="capacity">Restant Cap</string>
 
     <string name="full_battery">Plein</string>
     <string name="hr_left"> hr left</string>
