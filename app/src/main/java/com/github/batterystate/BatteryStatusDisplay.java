@@ -55,7 +55,7 @@ public class BatteryStatusDisplay extends Fragment {
         mCharge.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DISPLAY_CHARGE = DISPLAY_CHARGE <2? DISPLAY_CHARGE +1:0;
+                DISPLAY_CHARGE = DISPLAY_CHARGE <3? DISPLAY_CHARGE +1:0;
                 if(TEST) {
                     testCharge = testCharge < 100 ? testCharge + 1 : 0;
                 }
@@ -107,13 +107,28 @@ public class BatteryStatusDisplay extends Fragment {
             }
         });
 
+
+        ImageButton settings=(ImageButton) view.findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().setCustomAnimations(
+                        R.animator.slide_in_right, R.animator.slide_out_left,
+                        R.animator.slide_in_left, R.animator.slide_out_right)
+                        .replace(R.id.frag_container, new SettingsFragment()).addToBackStack(TAG)
+                        .commit();
+            }
+        });
+
+
         return view;
     }
 
     /**
      * Update battery status UI
      * @param errorCode 0 means no error, 99 means update from touching screen
-     * @param in input String of 8 or 12(w/ IP) bytes, batteryLevel, batteryHealth, TTE/F(2 bytes), current(2 bytes), volt(2 bytes), IP(4 bytes)
+     * @param in input String of 8 or 12(w/ IP) bytes, batteryLevel, batteryHealth, TTE/F(2 bytes),
+     *           current(2 bytes), volt(2 bytes), IP(4 bytes)
      */
     protected void updateUI(int errorCode, String in){
         if(TEST) {
@@ -149,33 +164,36 @@ public class BatteryStatusDisplay extends Fragment {
                 if(TEST) {
                     batteryLevel = testCharge;
                 }
-                int TTEorF = util.parseInt(dataSet[2],dataSet[3]);
-                int current= util.parseInt(dataSet[4],dataSet[5]);
+                int current = util.parseInt(dataSet[4], dataSet[5]);
+                if(DISPLAY_CHARGE!=3) {
+                    mTextTTE.setVisibility(View.VISIBLE);
+                    int TTEorF = util.parseInt(dataSet[2], dataSet[3]);
 
-                if((current>>15)==1){
-                    current=current-65535;
-                }
-                //prevent from frequent flip btw full and empty
-                if(batteryLevel>95 && Math.abs(current)<30){
-                    mTextTTE.setText(R.string.full_battery);
-                }
-                else if(current<=0) {
-                    //display in minute if time is less than 300 minutes
-                    if(TTEorF>300) {
-                        mTextTTE.setText(String.format("%01d "+ getText(R.string.hr_left),TTEorF/60));
-                    }else{
-                        mTextTTE.setText(String.format("%01d "+ getText(R.string.min_left),TTEorF));
+                    if ((current >> 15) == 1) {
+                        current = current - 65535;
                     }
+                    //prevent from frequent flip btw full and empty
+                    if (batteryLevel > 95 && Math.abs(current) < 30) {
+                        mTextTTE.setText(R.string.full_battery);
+                    } else if (current <= 0) {
+                        //display in minute if time is less than 300 minutes
+                        if (TTEorF > 300) {
+                            mTextTTE.setText(String.format("%01d " + getText(R.string.hr_left), TTEorF / 60));
+                        } else {
+                            mTextTTE.setText(String.format("%01d " + getText(R.string.min_left), TTEorF));
+                        }
+                    } else {
+                        if (TTEorF > 300) {
+                            mTextTTE.setText(String.format("%01d " + getText(R.string.hr_full), TTEorF / 60));
+                        } else {
+                            mTextTTE.setText(String.format("%01d " + getText(R.string.min_full), TTEorF));
+                        }
+                    }
+
+                    Log.d(TAG, "@updateUI, level is " + batteryLevel + " health is " + batteryHealth + " TTE/F is " + TTEorF + " current is " + current);
                 }else{
-                    if(TTEorF>300) {
-                        mTextTTE.setText(String.format("%01d "+ getText(R.string.hr_full),TTEorF/60));
-                    }else{
-                        mTextTTE.setText(String.format("%01d "+ getText(R.string.min_full),TTEorF));
-                    }
+                    mTextTTE.setVisibility(View.INVISIBLE);
                 }
-
-                Log.d(TAG,"@updateUI, level is "+batteryLevel+" health is "+batteryHealth+" TTE/F is "+TTEorF +" current is " +current);
-
                 switch (DISPLAY_CHARGE) {
                     case 1:
                         int volt=util.parseInt(dataSet[6],dataSet[7]);
@@ -200,6 +218,14 @@ public class BatteryStatusDisplay extends Fragment {
                             mTextCharge.setText(Integer.toString(absAmp) + " mA");
 
                         }
+                        break;
+                    case 3:
+                        mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
+                        mTextChargeTitle.setText(getText(R.string.remKM));
+                        //double repCap=util.parseInt(dataSet[10],dataSet[11])/100.0;
+                        //double remDistance=7.2*repCap/5
+                        double remDistance=util.parseInt(dataSet[10],dataSet[11])*72/200.0;
+                        mTextCharge.setText(Double.toString(remDistance)+" km");
                         break;
                     default:
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,56);

@@ -57,12 +57,12 @@
                     android:fontFamily="sans-serif-thin"
                     android:text="@string/TTE_Default" />
                 <ImageButton
-                    android:id="@+id/setTheme"
+                    android:id="@+id/settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="260dp"
                     android:layout_marginTop="@dimen/padding_half"
-                    android:src="@drawable/theme_button"
+                    android:src="@drawable/settings_button"
                     android:background="@null" />
         </FrameLayout>
         <FrameLayout
@@ -103,6 +103,14 @@
                     android:textSize="56sp"
                     android:fontFamily="sans-serif-thin"
                     android:text="@string/battery_health" />
+                <ImageButton
+                    android:id="@+id/setTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="260dp"
+                    android:layout_marginTop="@dimen/padding_half"
+                    android:src="@drawable/theme_button"
+                    android:background="@null" />
         </FrameLayout>
 
         <FrameLayout

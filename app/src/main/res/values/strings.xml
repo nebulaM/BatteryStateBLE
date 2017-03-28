@@ -30,6 +30,7 @@
     <string name="voltage">Voltage</string>
     <string name="cycle">Cycle</string>
     <string name="capacity">Remain Cap</string>
+    <string name="remKM">Remain KM</string>
 
     <string name="full_battery">Full</string>
     <string name="hr_left"> hr left</string>
@@ -53,4 +54,10 @@
     <string name="connectFailToast">Connection failed. Please retry.</string>
 
     <string name="theme">Theme</string>
+
+    <string name="pref_alert_title">Alert</string>
+    <string name="pref_alert_summ">Alert when battery level is low</string>
+    <string name="battery_type">Battery Type</string>
+    <string name="pref_battery_type_default">Lithium Ion</string>
+    <string name="pref_battery_type_summ">Choose your battery type</string>
 </resources>

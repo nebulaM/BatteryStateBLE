@@ -31,11 +31,14 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -91,6 +94,8 @@ public class BluetoothLeService extends Service {
     private boolean firstTime2Cloud;
     private BatteryObject mBatteryData2AWS;
     private DynamoDBMapper mapperAWSDB;
+
+    private String batteryType="";
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -157,7 +162,22 @@ public class BluetoothLeService extends Service {
         ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
         mapperAWSDB = new DynamoDBMapper(ddbClient);
 
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+
+        SharedPreferences.OnSharedPreferenceChangeListener listener =
+                new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                        // listener implementation
+                        if (key.equals("pref_battery_type")) {
+                            batteryType=prefs.getString(key,getText(R.string.pref_battery_type_default).toString());
+                            Log.d(TAG,"battery type from pref is "+batteryType);
+                        }
+                    }
+                };
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+
     }
+
 
     private String mIP;
     public String getIP(){
@@ -301,6 +321,7 @@ public class BluetoothLeService extends Service {
             mBatteryData2AWS.setSerialNum(serialNumber);
             mBatteryData2AWS.setCharge(charge);
             mBatteryData2AWS.setHealth(health);
+            mBatteryData2AWS.setBatteryType(batteryType);
             mBatteryData2AWS.setCycle(cycle);
             mBatteryData2AWS.setRepCap(repCap);
             mBatteryData2AWS.setUpdate(df.format(c.getTime()));

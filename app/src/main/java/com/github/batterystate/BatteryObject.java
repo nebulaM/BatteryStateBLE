@@ -33,13 +33,13 @@ import java.util.Calendar;
     public void setSerialNum(String serialNum){
         mSerialNum=serialNum;
     }
-    /*@DynamoDBAttribute(attributeName = "Battery-Type")
+    @DynamoDBAttribute(attributeName = "Battery-Type")
     public String getBatteryType() {
         return mBatteryType;
     }
     public void setBatteryType(String batteryType){
         mBatteryType=batteryType;
-    }*/
+    }
 
 
 

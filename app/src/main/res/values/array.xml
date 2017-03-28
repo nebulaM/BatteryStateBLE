@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="battery_type_names">
+        <item>Lithium Ion</item>
+        <item>Lead Acid</item>
+        <item>Lithium Polymer</item>
+        <item>NiCd</item>
+        <item>NiMH</item>
+    </string-array>
+
+</resources>
