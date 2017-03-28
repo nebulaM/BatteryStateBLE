@@ -56,7 +56,8 @@
     <string name="theme">Theme</string>
 
     <string name="pref_alert_title">Alert</string>
-    <string name="pref_alert_summ">Alert on low battery</string>
+    <string name="pref_alert_summ">Alert on low battery is enabled</string>
+    <string name="pref_no_alert_summ">Alert on low battery is disabled</string>
     <string name="pref_alert_percent_title">Alert Percentage</string>
     <string name="pref_alert_percent_summ">Alert when battery level is lower than this percentage</string>
 
