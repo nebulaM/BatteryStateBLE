@@ -97,6 +97,7 @@ public class BluetoothLeService extends Service {
 
     private String batteryType;
     private boolean lowBatAlert;
+    private int alertPercent;
     private boolean firstAlert=false;
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -167,6 +168,8 @@ public class BluetoothLeService extends Service {
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
         batteryType=prefs.getString("pref_battery_type",getText(R.string.pref_battery_type_default).toString());
         lowBatAlert=prefs.getBoolean("pref_alert",true);
+        alertPercent=Integer.valueOf(prefs.getString("pref_alert_percent","15"));
+        Log.d(TAG,"alertPercent from pref is "+alertPercent);
         SharedPreferences.OnSharedPreferenceChangeListener listener =
                 new SharedPreferences.OnSharedPreferenceChangeListener() {
                     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
@@ -176,6 +179,9 @@ public class BluetoothLeService extends Service {
                             Log.d(TAG,"battery type from pref is "+batteryType);
                         }else if(key.equals("pref_alert")){
                             lowBatAlert=prefs.getBoolean(key,true);
+                        }else if(key.equals("pref_alert_percent")){
+                            alertPercent=Integer.valueOf(prefs.getString(key,"15"));
+                            Log.d(TAG,"alertPercent from pref is "+alertPercent);
                         }
                     }
                 };
@@ -241,7 +247,7 @@ public class BluetoothLeService extends Service {
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
 
-            if(lowBatAlert && dataSet[7]<=25){
+            if(lowBatAlert && dataSet[7]<=alertPercent){
                 if(dataSet[7]<mChargeLevel) {
                     if(! firstAlert && dataSet[7]%5==0 || mChargeLevel==100){
                         firstAlert=true;

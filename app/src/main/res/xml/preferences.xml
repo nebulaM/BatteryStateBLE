@@ -5,14 +5,22 @@
         android:title="@string/pref_alert_title"
         android:summary="@string/pref_alert_summ"
         android:defaultValue="true" />
+    <ListPreference
+        android:key="pref_alert_percent"
+        android:title="@string/pref_alert_percent_title"
+        android:dialogTitle="@string/pref_alert_percent_title"
+        android:summary="@string/pref_alert_percent_summ"
+        android:entries="@array/alert_percent_names"
+        android:entryValues="@array/alert_percent_values"
+        android:defaultValue="15" />
 
-        <ListPreference
-            android:key="pref_battery_type"
-            android:title="@string/battery_type"
-            android:dialogTitle="@string/battery_type"
-            android:summary="@string/pref_battery_type_summ"
-            android:entries="@array/battery_type_names"
-            android:entryValues="@array/battery_type_names"
-            android:defaultValue="@string/pref_battery_type_default" />
+    <ListPreference
+        android:key="pref_battery_type"
+        android:title="@string/battery_type"
+        android:dialogTitle="@string/battery_type"
+        android:summary="@string/pref_battery_type_summ"
+        android:entries="@array/battery_type_names"
+        android:entryValues="@array/battery_type_names"
+        android:defaultValue="@string/pref_battery_type_default" />
 
 </PreferenceScreen>
