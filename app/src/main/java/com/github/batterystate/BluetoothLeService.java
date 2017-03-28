@@ -95,7 +95,9 @@ public class BluetoothLeService extends Service {
     private BatteryObject mBatteryData2AWS;
     private DynamoDBMapper mapperAWSDB;
 
-    private String batteryType="";
+    private String batteryType;
+    private boolean lowBatAlert;
+    private boolean firstAlert=false;
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -163,7 +165,8 @@ public class BluetoothLeService extends Service {
         mapperAWSDB = new DynamoDBMapper(ddbClient);
 
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
-
+        batteryType=prefs.getString("pref_battery_type",getText(R.string.pref_battery_type_default).toString());
+        lowBatAlert=prefs.getBoolean("pref_alert",true);
         SharedPreferences.OnSharedPreferenceChangeListener listener =
                 new SharedPreferences.OnSharedPreferenceChangeListener() {
                     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
@@ -171,6 +174,8 @@ public class BluetoothLeService extends Service {
                         if (key.equals("pref_battery_type")) {
                             batteryType=prefs.getString(key,getText(R.string.pref_battery_type_default).toString());
                             Log.d(TAG,"battery type from pref is "+batteryType);
+                        }else if(key.equals("pref_alert")){
+                            lowBatAlert=prefs.getBoolean(key,true);
                         }
                     }
                 };
@@ -236,11 +241,10 @@ public class BluetoothLeService extends Service {
             //Log.d(TAG,"@broadcastUpdate String is "+sb.toString());
             //battery level
 
-            if(dataSet[7]<=15){
+            if(lowBatAlert && dataSet[7]<=25){
                 if(dataSet[7]<mChargeLevel) {
-                    if(dataSet[7]==0 ||dataSet[7]==5 || dataSet[7]==10
-                            || dataSet[7]==15 || mChargeLevel==100){
-
+                    if(! firstAlert && dataSet[7]%5==0 || mChargeLevel==100){
+                        firstAlert=true;
                         String lowBatMSG=getText(R.string.notify_low_bat_text)+String.valueOf(dataSet[7])+"%";
 
                         Intent click=new Intent(this,MainActivity.class);
