@@ -30,7 +30,7 @@
     <string name="voltage">Voltage</string>
     <string name="cycle">Cycle</string>
     <string name="capacity">Remain Cap</string>
-    <string name="remKM">Remain KM</string>
+    <string name="remKM">Range</string>
 
     <string name="full_battery">Full</string>
     <string name="hr_left"> hr left</string>
@@ -65,6 +65,6 @@
     <string name="pref_battery_type_default">Lithium Ion</string>
     <string name="pref_battery_type_summ">Choose your battery type</string>
 
-    <string name="pref_wheelchair_speed_summ">To estimate remaining km, enter your wheelchair speed in km/hour</string>
-    <string name="pref_wheelchair_current_summ">To estimate remaining km, enter the nominal current of your wheelchair, this value should be on your wheelchair\'s motor</string>
+    <string name="pref_wheelchair_speed_summ">To estimate range, enter your wheelchair speed in km/hour</string>
+    <string name="pref_wheelchair_current_summ">To estimate range, enter the nominal current of your wheelchair.</string>
 </resources>

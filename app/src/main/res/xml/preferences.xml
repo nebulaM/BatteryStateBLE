@@ -26,15 +26,15 @@
 
     <EditTextPreference
         android:key="pref_wheelchair_speed"
-        android:title="WheelChair Speed"
+        android:title="Wheelchair Speed"
         android:summary="@string/pref_wheelchair_speed_summ"
-        android:dialogTitle="WheelChair Speed"
+        android:dialogTitle="Wheelchair Speed"
         android:defaultValue="7.2"/>
 
     <EditTextPreference
         android:key="pref_wheelchair_current"
-        android:title="WheelChair Current"
+        android:title="Wheelchair Current"
         android:summary="@string/pref_wheelchair_current_summ"
-        android:dialogTitle="WheelChair Nominal Current"
+        android:dialogTitle="Wheelchair Nominal Current"
         android:defaultValue="5"/>
 </PreferenceScreen>
