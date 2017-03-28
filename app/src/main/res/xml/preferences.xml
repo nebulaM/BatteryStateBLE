@@ -24,4 +24,17 @@
         android:entryValues="@array/battery_type_names"
         android:defaultValue="@string/pref_battery_type_default" />
 
+    <EditTextPreference
+        android:key="pref_wheelchair_speed"
+        android:title="WheelChair Speed"
+        android:summary="@string/pref_wheelchair_speed_summ"
+        android:dialogTitle="WheelChair Speed"
+        android:defaultValue="7.2"/>
+
+    <EditTextPreference
+        android:key="pref_wheelchair_current"
+        android:title="WheelChair Current"
+        android:summary="@string/pref_wheelchair_current_summ"
+        android:dialogTitle="WheelChair Nominal Current"
+        android:defaultValue="5"/>
 </PreferenceScreen>

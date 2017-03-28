@@ -2,7 +2,9 @@
 package com.github.batterystate;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BatteryStatusDisplay extends Fragment {
     private final static String TAG ="BatteryStatusDisplay";
@@ -39,9 +42,69 @@ public class BatteryStatusDisplay extends Fragment {
     private final long tmpInTimeOut=5000;
 
     private long tmpInLastUpdate;
+
+    private double wheelchairSpeed;
+    private double wheelchairCurrent;
+
+
+    SharedPreferences.OnSharedPreferenceChangeListener listener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                    // listener implementation
+                    if (key.equals("pref_wheelchair_speed")){
+                        String tmp=prefs.getString(key,"7.2");
+                        if(tmp.matches("[0-9]*\\.?[0-9]+")){
+                            wheelchairSpeed=Double.valueOf(tmp);
+                            Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
+                        }else{
+                            Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
+                            prefs.edit().putString("pref_wheelchair_speed","7.2").apply();
+                            wheelchairSpeed=7.2;
+                            Log.d(TAG,"Invalid speed");
+                        }
+                    }else if(key.equals("pref_wheelchair_current")){
+                        String tmp=prefs.getString("pref_wheelchair_current","5");
+                        if(tmp.matches("[0-9]*\\.?[0-9]+")){
+                            wheelchairCurrent=Double.valueOf(tmp);
+                            Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
+                        }else {
+                            Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
+                            prefs.edit().putString("pref_wheelchair_current","5").apply();
+                            wheelchairCurrent=5;
+                            Log.d(TAG,"Invalid current");
+                        }
+                    }
+                }
+            };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String tmp=prefs.getString("pref_wheelchair_speed","7.2");
+        if(tmp.matches("[0-9]*\\.?[0-9]+")){
+            wheelchairSpeed=Double.valueOf(tmp);
+            Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
+        }else{
+            Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
+            prefs.edit().putString("pref_wheelchair_speed","7.2").apply();
+            wheelchairSpeed=7.2;
+            Log.d(TAG,"Invalid speed");
+        }
+        tmp=prefs.getString("pref_wheelchair_current","5");
+        if(tmp.matches("[0-9]*\\.?[0-9]+")){
+            wheelchairCurrent=Double.valueOf(tmp);
+            Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
+        }else {
+            Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
+            prefs.edit().putString("pref_wheelchair_current","5").apply();
+            wheelchairCurrent=5;
+            Log.d(TAG,"Invalid current");
+        }
+
+
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+
     }
 
     @Override
@@ -120,9 +183,10 @@ public class BatteryStatusDisplay extends Fragment {
             }
         });
 
-
         return view;
     }
+
+
 
     /**
      * Update battery status UI
@@ -222,9 +286,9 @@ public class BatteryStatusDisplay extends Fragment {
                     case 3:
                         mTextCharge.setTextSize(TypedValue.COMPLEX_UNIT_SP,32);
                         mTextChargeTitle.setText(getText(R.string.remKM));
-                        //double repCap=util.parseInt(dataSet[10],dataSet[11])/100.0;
-                        //double remDistance=7.2*repCap/5
-                        double remDistance=util.parseInt(dataSet[10],dataSet[11])*72/200.0;
+                        double repCap=util.parseInt(dataSet[10],dataSet[11]);
+                        double remDistance=Math.round(wheelchairSpeed*repCap/wheelchairCurrent)/100.0;
+                        //double remDistance=util.parseInt(dataSet[10],dataSet[11])*72/200.0;
                         mTextCharge.setText(Double.toString(remDistance)+" km");
                         break;
                     default:
