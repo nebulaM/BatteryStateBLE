@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity{
 
                     }
                 }else if(action.equals("subBLE")){
-                    subscribeBLE();
+                    //subscribeBLE();
                 }
             }
         });
