@@ -55,23 +55,23 @@ public class BatteryStatusDisplay extends Fragment {
                         String tmp=prefs.getString(key,"7.2");
                         if(tmp.matches("[0-9]*\\.?[0-9]+")){
                             wheelchairSpeed=Double.valueOf(tmp);
-                            Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
+                            //Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
                         }else{
                             Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
                             prefs.edit().putString("pref_wheelchair_speed","7.2").apply();
                             wheelchairSpeed=7.2;
-                            Log.d(TAG,"Invalid speed");
+                            //Log.d(TAG,"Invalid speed");
                         }
                     }else if(key.equals("pref_wheelchair_current")){
                         String tmp=prefs.getString("pref_wheelchair_current","5");
                         if(tmp.matches("[0-9]*\\.?[0-9]+")){
                             wheelchairCurrent=Double.valueOf(tmp);
-                            Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
+                            //Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
                         }else {
                             Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
                             prefs.edit().putString("pref_wheelchair_current","5").apply();
                             wheelchairCurrent=5;
-                            Log.d(TAG,"Invalid current");
+                            //Log.d(TAG,"Invalid current");
                         }
                     }
                 }
@@ -84,22 +84,22 @@ public class BatteryStatusDisplay extends Fragment {
         String tmp=prefs.getString("pref_wheelchair_speed","7.2");
         if(tmp.matches("[0-9]*\\.?[0-9]+")){
             wheelchairSpeed=Double.valueOf(tmp);
-            Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
+            //Log.d(TAG,"wheelchair speed is "+wheelchairSpeed);
         }else{
             Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
             prefs.edit().putString("pref_wheelchair_speed","7.2").apply();
             wheelchairSpeed=7.2;
-            Log.d(TAG,"Invalid speed");
+            //Log.d(TAG,"Invalid speed");
         }
         tmp=prefs.getString("pref_wheelchair_current","5");
         if(tmp.matches("[0-9]*\\.?[0-9]+")){
             wheelchairCurrent=Double.valueOf(tmp);
-            Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
+            //Log.d(TAG,"wheelchair current is "+wheelchairCurrent);
         }else {
             Toast.makeText(getActivity(),"Input must be a positive number, will reset this value to default for now",Toast.LENGTH_LONG).show();
             prefs.edit().putString("pref_wheelchair_current","5").apply();
             wheelchairCurrent=5;
-            Log.d(TAG,"Invalid current");
+            //Log.d(TAG,"Invalid current");
         }
 
 
@@ -254,7 +254,7 @@ public class BatteryStatusDisplay extends Fragment {
                         }
                     }
 
-                    Log.d(TAG, "@updateUI, level is " + batteryLevel + " health is " + batteryHealth + " TTE/F is " + TTEorF + " current is " + current);
+                    //Log.d(TAG, "@updateUI, level is " + batteryLevel + " health is " + batteryHealth + " TTE/F is " + TTEorF + " current is " + current);
                 }else{
                     mTextTTE.setVisibility(View.INVISIBLE);
                 }
