@@ -66,5 +66,5 @@
     <string name="pref_battery_type_summ">Choose your battery type</string>
 
     <string name="pref_wheelchair_speed_summ">To estimate range, enter your wheelchair speed in km/hour</string>
-    <string name="pref_wheelchair_current_summ">To estimate range, enter the nominal current of your wheelchair.</string>
+    <string name="pref_wheelchair_current_summ">To estimate range, enter the nominal current of your wheelchair in Amp.</string>
 </resources>

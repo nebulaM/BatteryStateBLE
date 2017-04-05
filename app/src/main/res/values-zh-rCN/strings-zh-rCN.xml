@@ -30,6 +30,7 @@
     <string name="voltage">电压</string>
     <string name="cycle">循环次数</string>
     <string name="capacity">剩余电池容量</string>
+    <string name="remKM">剩余路程</string>
 
     <string name="full_battery">满电</string>
     <string name="hr_left">小时剩余</string>
@@ -53,4 +54,17 @@
     <string name="connectFailToast">连接失败，请重试。</string>
 
     <string name="theme">主题</string>
+
+    <string name="pref_alert_title">提示</string>
+    <string name="pref_alert_summ">开启电量低时的提示</string>
+    <string name="pref_no_alert_summ">关闭电量低时的提示</string>
+    <string name="pref_alert_percent_title">电量百分比</string>
+    <string name="pref_alert_percent_summ">电量低于此百分比时提示</string>
+
+    <string name="battery_type">电池类型</string>
+    <string name="pref_battery_type_default">Lithium Ion</string>
+    <string name="pref_battery_type_summ">选择你的电池类型</string>
+
+    <string name="pref_wheelchair_speed_summ">输入轮椅的速度以便于测量轮椅在电池耗光前的剩余路程，单位是km/hour</string>
+    <string name="pref_wheelchair_current_summ">输入轮椅的电流以便于测量轮椅在电池耗光前的剩余路程,单位是Amp</string>
 </resources>

@@ -30,6 +30,7 @@
     <string name="voltage">Tension</string>
     <string name="cycle">Cycle</string>
     <string name="capacity">Restant Cap</string>
+    <string name="remKM">Gamme</string>
 
     <string name="full_battery">Plein</string>
     <string name="hr_left"> hr left</string>
@@ -53,4 +54,18 @@
     <string name="connectFailToast">La connexion a échoué. Veuillez réessayer.</string>
 
     <string name="theme">Thème</string>
+
+    <string name="pref_alert_title">Alerte</string>
+    <string name="pref_alert_summ">L'alerte sur batterie faible est activée</string>
+    <string name="pref_no_alert_summ">Alert on low battery is disabled</string>
+    <string name="pref_alert_percent_title">L'alerte sur batterie faible est désactivée</string>
+    <string name="pref_alert_percent_summ">Alerte lorsque le niveau de la batterie est inférieur à ce pourcentage</string>
+
+    <string name="battery_type">Type de Batterie</string>
+    <string name="pref_battery_type_default">Lithium Ion</string>
+    <string name="pref_battery_type_summ">Choisissez votre type de batterie</string>
+
+    <string name="pref_wheelchair_speed_summ">Pour estimer la portée, entrez la vitesse de votre fauteuil roulant en km/heure</string>
+    <string name="pref_wheelchair_current_summ">Pour estimer la portée, entrez le courant nominal de votre fauteuil roulant en Amp.</string>
+
 </resources>

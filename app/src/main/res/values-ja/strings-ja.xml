@@ -22,14 +22,15 @@
     <string name="menu_stop">停止</string>
 
 
-    <string name="notify_low_bat_title">Cadexバッテリー残量が少ない</string>
-    <string name="notify_low_bat_text">電池残量</string>
+    <string name="notify_low_bat_title">Cadex電池の残量が少ない</string>
+    <string name="notify_low_bat_text">電池の残量は</string>
 
     <string name="charge">残量</string>
     <string name="current">電流</string>
     <string name="voltage">電圧</string>
     <string name="cycle">充放電回数</string>
     <string name="capacity">残り電池容量</string>
+    <string name="remKM">Range</string>
 
     <string name="full_battery">充満した</string>
     <string name="hr_left">時間残り</string>
@@ -53,4 +54,17 @@
     <string name="connectFailToast">接続は失敗しました。もう一度やり直してください。</string>
 
     <string name="theme">テーマ</string>
+
+    <string name="pref_alert_title">通知音でお知らせ</string>
+    <string name="pref_alert_summ">バッテリーの残量低い場合の警告音を有効にする。</string>
+    <string name="pref_no_alert_summ">バッテリーの残量低い場合の警告音を無効にする。</string>
+    <string name="pref_alert_percent_title">バッテリーパーセント</string>
+    <string name="pref_alert_percent_summ">バッテリーの残量設定されたレベルより低いと、通知音で警告します。</string>
+
+    <string name="battery_type">バッテリーの種類</string>
+    <string name="pref_battery_type_default">Lithium Ion</string>
+    <string name="pref_battery_type_summ">バッテリーの種類を選んでください。</string>
+
+    <string name="pref_wheelchair_speed_summ">電池の残量を残りキロで表示するのために、車いすのスピードを輸入してください。単位はkm/hourです。</string>
+    <string name="pref_wheelchair_current_summ">電池の残量を残りキロで表示するのために、車いすの電流を輸入してください。単位はAmpです</string>
 </resources>
