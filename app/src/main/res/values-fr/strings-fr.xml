@@ -56,9 +56,9 @@
     <string name="theme">Thème</string>
 
     <string name="pref_alert_title">Alerte</string>
-    <string name="pref_alert_summ">L'alerte sur batterie faible est activée</string>
+    <string name="pref_alert_summ">L\'alerte sur batterie faible est activée</string>
     <string name="pref_no_alert_summ">Alert on low battery is disabled</string>
-    <string name="pref_alert_percent_title">L'alerte sur batterie faible est désactivée</string>
+    <string name="pref_alert_percent_title">L\'alerte sur batterie faible est désactivée</string>
     <string name="pref_alert_percent_summ">Alerte lorsque le niveau de la batterie est inférieur à ce pourcentage</string>
 
     <string name="battery_type">Type de Batterie</string>
