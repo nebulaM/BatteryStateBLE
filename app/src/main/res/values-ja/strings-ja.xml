@@ -67,4 +67,6 @@
 
     <string name="pref_wheelchair_speed_summ">電池の残量を残りキロで表示するのために、車いすのスピードを輸入してください。単位はkm/hourです。</string>
     <string name="pref_wheelchair_current_summ">電池の残量を残りキロで表示するのために、車いすの電流を輸入してください。単位はAmpです</string>
+    <string name="wheelchair_speed">車いすのスピード</string>
+    <string name="wheelchair_current">車いすの電流</string>
 </resources>

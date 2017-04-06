@@ -67,4 +67,6 @@
 
     <string name="pref_wheelchair_speed_summ">输入轮椅的速度以便于测量轮椅在电池耗光前的剩余路程，单位是km/hour</string>
     <string name="pref_wheelchair_current_summ">输入轮椅的电流以便于测量轮椅在电池耗光前的剩余路程,单位是Amp</string>
+    <string name="wheelchair_speed">轮椅的速度</string>
+    <string name="wheelchair_current">轮椅的电流</string>
 </resources>

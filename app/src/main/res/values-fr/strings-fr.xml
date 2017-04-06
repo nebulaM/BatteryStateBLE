@@ -68,4 +68,7 @@
     <string name="pref_wheelchair_speed_summ">Pour estimer la portée, entrez la vitesse de votre fauteuil roulant en km/heure</string>
     <string name="pref_wheelchair_current_summ">Pour estimer la portée, entrez le courant nominal de votre fauteuil roulant en Amp.</string>
 
+    <string name="wheelchair_speed">Vitesse de fauteuil roulant</string>
+    <string name="wheelchair_current">Courant en fauteuil roulant</string>
+
 </resources>
